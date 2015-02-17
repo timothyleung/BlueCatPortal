@@ -1,0 +1,10 @@
+@Brief		This is a release note for Third Party BlueCat Portal 
+@author		Timothy Leung
+@contact	Timothy.Leung@edvancesecurity.com.hk
+
+v1.0
+------------------------------------------
+- 	Inital version from FiveHundredNet
+
+Bug fixed:
+-	';' removed from the first line of /WEB-INF/Login/LogIn.jsp

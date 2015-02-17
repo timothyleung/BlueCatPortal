@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+	<description>A tag library exercising SimpleTag handlers.</description>
+	<tlib-version>1.0</tlib-version>
+	<short-name>Delete</short-name>
+	<uri>http://www.fivehundred.com.tw.delete</uri>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>OneMACAddress</name>
+		<tag-class>tw.com.fivehundred.tag.delete.OneMACAddress</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>OneMACAddressCheck</name>
+		<tag-class>tw.com.fivehundred.tag.delete.OneMACAddressCheck</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>OneMACAddressDelete</name>
+		<tag-class>tw.com.fivehundred.tag.delete.OneMACAddressDelete</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>OneIPAddress</name>
+		<tag-class>tw.com.fivehundred.tag.delete.OneIPAddress</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>OneIPAddressCheck</name>
+		<tag-class>tw.com.fivehundred.tag.delete.OneIPAddressCheck</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>OneIPAddressDelete</name>
+		<tag-class>tw.com.fivehundred.tag.delete.OneIPAddressDelete</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>MultiAddress</name>
+		<tag-class>tw.com.fivehundred.tag.delete.MultiAddress</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>MultiMACAddressChoiceDel</name>
+		<tag-class>tw.com.fivehundred.tag.delete.MultiAddressChoice</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>MultiAddressDelete</name>
+		<tag-class>tw.com.fivehundred.tag.delete.MultiAddressDelete</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+</taglib>

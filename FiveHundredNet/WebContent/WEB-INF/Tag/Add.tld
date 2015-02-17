@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+	<description>A tag library exercising SimpleTag handlers.</description>
+	<tlib-version>1.0</tlib-version>
+	<short-name>Add</short-name>
+	<uri>http://www.fivehundred.com.tw.add</uri>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>OneMACAddress</name>
+		<tag-class>tw.com.fivehundred.tag.add.OneMACAddress</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>OneMACAddressCheck</name>
+		<tag-class>tw.com.fivehundred.tag.add.OneMACAddressCheck</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>OneMACAddressAdd</name>
+		<tag-class>tw.com.fivehundred.tag.add.OneMACAddressAdd</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>MultiMACAddress</name>
+		<tag-class>tw.com.fivehundred.tag.add.MultiMACAddress</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>MultiMACAddressChoice</name>
+		<tag-class>tw.com.fivehundred.tag.add.MultiMACAddressChoice</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Outputs Hello, World</description>
+		<name>MultiMACAddressAdd</name>
+		<tag-class>tw.com.fivehundred.tag.add.MultiMACAddressAdd</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+</taglib>

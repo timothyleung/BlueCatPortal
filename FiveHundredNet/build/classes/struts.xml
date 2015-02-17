@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+
+	<package name="FiveHundredNet" namespace="/BlueCat" extends="struts-default">
+		<action name="LogIn" class="tw.com.fivehundred.login.Login">
+			<result name="success">/WEB-INF/Page/home.jsp</result>
+			<result name="Login">/WEB-INF/Login/LogIn.jsp</result>
+		</action>
+		<action name="DownPage" class="tw.com.fivehundred.down.Down">
+			<result name="DownPage" type="stream">
+			 <param name="contentDisposition">attachment;fileName="example.csv"</param>  
+			 <param name="inputName">downloadFile</param>
+			</result>
+		</action>
+		<action name="DownDelPage" class="tw.com.fivehundred.down.DownDel">
+			<result name="DownPage" type="stream">
+			 <param name="contentDisposition">attachment;fileName="exampledel.csv"</param>  
+			 <param name="inputName">downloadFile</param>
+			</result>
+		</action>
+		<action name="DownDelPageip" class="tw.com.fivehundred.down.DownDelip">
+			<result name="DownPage" type="stream">
+			 <param name="contentDisposition">attachment;fileName="exampledelip.csv"</param>  
+			 <param name="inputName">downloadFile</param>
+			</result>
+		</action>
+		<action name="DownDelPagemac" class="tw.com.fivehundred.down.DownDelmac">
+			<result name="DownPage" type="stream">
+			 <param name="contentDisposition">attachment;fileName="exampledelmac.csv"</param>  
+			 <param name="inputName">downloadFile</param>
+			</result>
+		</action>
+		<action name="AddPage" class="tw.com.fivehundred.add.Add">
+			<result name="AddPage">/WEB-INF/Page/AddPage.jsp</result>
+			<result name="Login">/WEB-INF/Login/LogIn.jsp</result>
+		</action>
+		<action name="DeletePage" class="tw.com.fivehundred.delete.Delete">
+			<result name="DeletePage">/WEB-INF/Page/DeletePage.jsp</result>
+			<result name="Login">/WEB-INF/Login/LogIn.jsp</result>
+		</action>
+		<action name="HistoryPage" class="tw.com.fivehundred.history.History">
+			<result name="HistoryPage">/WEB-INF/Page/HistoryPage.jsp</result>
+			<result name="Login">/WEB-INF/Login/LogIn.jsp</result>
+		</action>
+		<action name="SeachPage" class="tw.com.fivehundred.seach.Seach">
+			<result name="SeachPage">/WEB-INF/Page/SeachPage.jsp</result>
+			<result name="Login">/WEB-INF/Login/LogIn.jsp</result>
+		</action>
+		<action name="LogOutPage" class="tw.com.fivehundred.logout.LogOut">
+			<result name="Login">/WEB-INF/Login/LogIn.jsp</result>
+		</action>
+		<action name="BackPage" class="tw.com.fivehundred.back.Back">
+			<result name="Login">/WEB-INF/Login/LogIn.jsp</result>
+			<result name="home">/WEB-INF/Page/home.jsp</result>
+		</action>		
+	</package>
+</struts>    
