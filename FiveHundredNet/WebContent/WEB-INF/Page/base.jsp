@@ -33,7 +33,7 @@ function checkalldel(){
 	if (m==n){
 		form1.submit();
 	}else{ 
-		alert("Please Choice All Checkbox!");
+		alert("Please Check all the boxes!");
 	}
 	return false;
 } 
@@ -156,6 +156,3 @@ function checkalldel(){
 		</div>
 	</div>
 </div>
-
-<div align="center" id="footer">Powered by 500net&copy;五百戶科技2014 v.20141205</div>
-

@@ -31,7 +31,8 @@ public class Delete extends ActionSupport {
 	private String choose_delete;
 	private String select_config, select_servers;
 	private String erroMessage;
-
+	private final static String PURPLE_COLOR = "#E7CDFF";
+	
 	@SuppressWarnings("unchecked")
 	public String execute() {
 		boolean jump_login = true;
@@ -69,20 +70,14 @@ public class Delete extends ActionSupport {
 			 */
 			jump_login = left_menu_highlighting(requst, choose);
 
+			
 			if (choose.equals("check")) {
 				session.put("select_config", select_config);
 				String jump = requst.getParameter("jump");
 				requst.setAttribute("ip_choice", ip_choice);
-				if (jump.equals("oneIP")) {
-					requst.setAttribute("ContentPage",
-							"/WEB-INF/ContentPage/Delete/OneIPAddress.jsp");
-					requst.setAttribute("oneIP",
-							"style='background-color:#E7CDFF;'");
-					requst.setAttribute("oneMac", "");
-					requst.setAttribute("multiAddress", "");
-					jump_login = false;
-				}
+
 				if (jump.equals("oneIPCheck")) {
+
 					session.put("IP_Address", IP_Address);
 					requst.setAttribute("ContentPage",
 							"/WEB-INF/ContentPage/Delete/OneIPAddressCheck.jsp");
@@ -92,6 +87,19 @@ public class Delete extends ActionSupport {
 					requst.setAttribute("multiAddress", "");
 					jump_login = false;
 				}
+				if (jump.equals("oneMACCheck")) {
+					System.out.println("5");
+
+					session.put("MAC_Address", MAC_Address);
+					requst.setAttribute("ContentPage",
+							"/WEB-INF/ContentPage/Delete/OneMACAddressCheck.jsp");
+					requst.setAttribute("oneIP", "");
+					requst.setAttribute("oneMac",
+							"style='background-color:#E7CDFF;'");
+					requst.setAttribute("multiAddress", "");
+					jump_login = false;
+				}
+				
 				if (jump.equals("oneIPDelete")) {
 					session.put("select_servers", select_servers);
 					session.put("IP_Address", IP_Address);
@@ -103,26 +111,9 @@ public class Delete extends ActionSupport {
 					requst.setAttribute("multiAddress", "");
 					jump_login = false;
 				}
-				if (jump.equals("oneMAC")) {
-					requst.setAttribute("ContentPage",
-							"/WEB-INF/ContentPage/Delete/OneMACAddress.jsp");
-					requst.setAttribute("oneIP", "");
-					requst.setAttribute("oneMac",
-							"style='background-color:#E7CDFF;'");
-					requst.setAttribute("multiAddress", "");
-					jump_login = false;
-				}
-				if (jump.equals("oneMACCheck")) {
-					session.put("MAC_Address", MAC_Address);
-					requst.setAttribute("ContentPage",
-							"/WEB-INF/ContentPage/Delete/OneMACAddressCheck.jsp");
-					requst.setAttribute("oneIP", "");
-					requst.setAttribute("oneMac",
-							"style='background-color:#E7CDFF;'");
-					requst.setAttribute("multiAddress", "");
-					jump_login = false;
-				}
 				if (jump.equals("oneMACDelete")) {
+					System.out.println("6");
+
 					session.put("select_servers", select_servers);
 					session.put("MAC_Address", MAC_Address);
 					requst.setAttribute("ContentPage",
@@ -134,6 +125,8 @@ public class Delete extends ActionSupport {
 					jump_login = false;
 				}
 				if (jump.equals("multi")) {
+					System.out.println("7");
+
 					session.put("select_servers", select_servers);
 					session.put("choose", choose_delete);
 					requst.setAttribute("ContentPage",
@@ -165,8 +158,6 @@ public class Delete extends ActionSupport {
 								Tools.clean_all_file(realpath);
 								try {
 									FileUtils.copyFile(fileData, savefile);
-									// ActionContext.getContext().put("message",
-									// "�����W�����\");
 									session.put("file_path",
 											savefile.getAbsolutePath());
 									requst.setAttribute("ContentPage",
@@ -179,7 +170,7 @@ public class Delete extends ActionSupport {
 								}
 							} else {
 								requst.setAttribute("erroMessage",
-										"�W���������~�A������csv����");
+										"Not a csv file"); // Change from chinese to english
 								requst.setAttribute("ContentPage",
 										"/WEB-INF/ContentPage/Add/MultiMACAddress.jsp");
 							}
@@ -194,9 +185,9 @@ public class Delete extends ActionSupport {
 					requst.setAttribute("multiAddress",
 							"style='background-color:#E7CDFF;'");
 					jump_login = false;
-				}
-			}
-		}
+				} // end of read
+			} // end of check
+		} // end of service
 		if (erroMessage != null) {
 			if (erroMessage.length() > 0) {
 				requst.setAttribute("erroMessage", erroMessage);
@@ -210,6 +201,13 @@ public class Delete extends ActionSupport {
 		}
 	}
 	
+	private void ask_for_check(Map session, HttpServletRequest request){
+		// 
+	}
+	
+	private void delete_after_check(Map session, HttpServletRequest request){
+		// three types here, one IP, oneMAC or Multi
+	}
 	private boolean left_menu_highlighting(HttpServletRequest request, String action){
 		String[] actions = {"DeleteData", "OneMACAddress", "OneIPAddress", "MultiMACAddress"};
 		String[] color_menu = {"oneIP", "oneMac", "oneIP", "multiAddress"};
@@ -222,8 +220,7 @@ public class Delete extends ActionSupport {
 		};
 		System.out.println(action + ":" + i);
 		request.setAttribute("ContentPage", "/WEB-INF/ContentPage/Delete/" + content_page[i] + ".jsp");
-		request.setAttribute(color_menu[i], "style='background-color:#E7CDFF;'");
-
+		request.setAttribute(color_menu[i], "style='background-color:" + PURPLE_COLOR + ";'");
 		return false;
 	}
 

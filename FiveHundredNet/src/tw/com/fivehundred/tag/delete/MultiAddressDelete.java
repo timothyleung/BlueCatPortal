@@ -41,11 +41,14 @@ public class MultiAddressDelete extends TagSupport {
 	@SuppressWarnings("unchecked")
 	@Override
 	public int doStartTag() throws JspException {
+		System.out.println("In multi address delete java");
 		ServletContext servletContext = ServletActionContext
 				.getServletContext();
 		HttpServletRequest request = (HttpServletRequest) this.pageContext
 				.getRequest();
 		Map session = ActionContext.getContext().getSession();
+		System.out.println(session);
+		
 		HttpServletResponse response = ServletActionContext.getResponse();
 		file_path = (String) session.get("file_path");
 		String choose = (String) session.get("choose");
@@ -71,9 +74,11 @@ public class MultiAddressDelete extends TagSupport {
 			String ip_choice = (String) session.get("ip_choice");
 
 			if (file_data != null) {
-
+				// Multi IP delete
+				System.out.println("Got File Data! Printing out... : " + file_data);
 				if (ip_choice.equals("ip")) {
 					if (choose != null) {
+						System.out.println("Printing choose : " + choose);
 						String[] choose_string_ip = choose.split(",");
 						Integer[] choose_ip = new Integer[choose_string_ip.length];
 						for (int i = 0; i < choose_string_ip.length; i++) {
@@ -81,15 +86,26 @@ public class MultiAddressDelete extends TagSupport {
 						}
 						for (int i = 0; i < choose_ip.length; i++) {
 							data = file_data[choose_ip[i]].split(",");
-							// §R°£IP
+							// ï¿½Rï¿½ï¿½IP
 							APIEntity config7 = service.getIP4Address(id, data[0].trim());
+							System.out.println("Pringint config7 & IP: " + config7 + " & " + data[0].trim());
 							if (config7 != null) {
 								service.delete(config7.getId());
+								// didn't delete mac address here : ) 
+								String macAddr = Tools.getMACbyMACADDRESSstring(config7.getProperties());
+								System.out.println("Printing corresponding mac address : " + macAddr);
+								// create a mac API entity
+								APIEntity macConfig = service.getMACAddress(id, macAddr.trim());
+								if(macConfig != null){
+									// remove the MAC service as well
+									service.delete(macConfig.getId());
+								}
 								String log_Content = userName + ","
 										+ "Multi IP Address" + "," + data[0].trim()
 										+ "," + "Delete" + "," + "Success"
 										+ "," + Tools.getTime() + ","
 										+ "IP Address Delete";
+								System.out.println(log_Content);
 								LogMian.writeLog(log_Content, userName);
 							}
 						}
@@ -97,6 +113,7 @@ public class MultiAddressDelete extends TagSupport {
 				}
 				ArrayList<Integer> mac_cant_delete = new ArrayList<Integer>();
 				
+				// multi mac delete
 				if (ip_choice.equals("mac") || ip_choice.equals("")) {
 					if (choose != null) {
 						String[] choose_string_mac = choose.split(",");
@@ -106,12 +123,12 @@ public class MultiAddressDelete extends TagSupport {
 						}
 						for (int i = 0; i < choose_mac.length; i++) {
 							data = file_data[choose_mac[i]].split(",");
-							// §R°£MAC
+							// ï¿½Rï¿½ï¿½MAC
 							APIEntity config7 = service.getMACAddress(id, data[0].trim()); 
-							//³oÃä¥X¿ù
+							//ï¿½oï¿½ï¿½ï¿½Xï¿½ï¿½
 							if (config7 != null) {
 								
-								//§ä¥X¬ÛÃöip
+								//ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½ip
 								APIEntity[] mac_ip_array=service.getLinkedEntities(config7.getId(),ObjectTypes.IP4Address,0,100);
 								String IP_addr=""; 
 								if (mac_ip_array.length>0){
@@ -149,10 +166,6 @@ public class MultiAddressDelete extends TagSupport {
 					}
 				}
 				if (mac_cant_delete.size() == 0) {
-					// harry
-					// APIEntity service_data = service.getEntityByName(id,
-					// select_servers, ObjectTypes.Server);
-					// service.deployServer(service_data.getId());
 
 					APIEntity service_data = service.getEntityByName(id,
 							serverid1, ObjectTypes.Server);

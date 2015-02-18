@@ -38,44 +38,47 @@ public class OneIPAddressDelete extends TagSupport {
 		String select_config = (String) session.get("select_config");
 		String IP_Address = (String) session.get("IP_Address");
 		String select_servers = (String) session.get("select_servers");
+		System.out.println("In one IP addres Delete java");
+		System.out.println(select_config + " " + IP_Address + " " + select_servers);
+		System.out.println(session);
 		session.remove("select_servers");
 		session.remove("IP_Address");
 		session.remove("select_config");
 		ProteusAPI_PortType service = (ProteusAPI_PortType) session
-				.get("ready_server");
-		request.setAttribute("select_config", select_config);
+				.get("ready_server"); // com.bluecatnetworks.proteus.api.client.java.proxy.ProteusAPIBindingStub@63af701e
+		request.setAttribute("select_config", select_config); //hkbu
 
 		try {
 			APIEntity config = service.getEntityByName(0, select_config,
-					ObjectTypes.Configuration);
-			long id = config.getId();
+					ObjectTypes.Configuration); // getting a single entity to modify it.. (object from database have hkbu as their name field and return type Configuration)
+			long id = config.getId(); 
+			System.out.println("Printing config :" + config);
+			 System.out.println("Cofig ID is : " + id);
+			// ï¿½Rï¿½ï¿½IP , ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½mac
 			
-			 
-			// §R°£IP , ¥ý§ä¥X¬ÛÃömac
-			APIEntity config_ip = service.getIP4Address(id, IP_Address.trim());
+			APIEntity config_ip = service.getIP4Address(id, IP_Address.trim()); // using this id we can get IP4 address?
+			
+			System.out.println("Printing config_ip & ID:" + config_ip + " & " + config_ip.getId());
 			String mac_addr= "";
 			if (config_ip!=null){
-			mac_addr=Tools.getMACbyMACADDRESSstring(config_ip.getProperties());
-			service.delete(config_ip.getId());
+				mac_addr=Tools.getMACbyMACADDRESSstring(config_ip.getProperties());  // getting the mac address
+				service.delete(config_ip.getId());
 			}
 			
-			//§R°£mac
-			APIEntity config_MAC = service.getMACAddress(id, mac_addr.trim());
+			// Assume we have mac address here, otherwise it will crash and throw exception. 
+			APIEntity config_MAC = service.getMACAddress(id, mac_addr.trim()); // retrieve the APIEntity for the MAC address using mac address string
 			if (config_ip!=null){
-			service.delete(config_MAC.getId());
+				service.delete(config_MAC.getId()); // api call to remove the MAC service!
 			}
 			
 			session.put("erroMessage", IP_Address+" Has Been Deleted");
-			//harry
-//			APIEntity service_data = service.getEntityByName(id,
-//					select_servers, ObjectTypes.Server);
-//			service.deployServer(service_data.getId());
+
 			APIEntity service_data = service.getEntityByName(id,
-					serverid1, ObjectTypes.Server); 
-			service.deployServerServices(service_data.getId(),"services=DHCP");
+					serverid1, ObjectTypes.Server); //BDDS1
+			//service.deployServerServices(service_data.getId(),"services=DHCP"); // redeploy? 
 			APIEntity service_data2 = service.getEntityByName(id,
-					serverid2, ObjectTypes.Server); 
-			service.deployServerServices(service_data2.getId(),"services=DHCP");
+					serverid2, ObjectTypes.Server); //BDDS2
+			//service.deployServerServices(service_data2.getId(),"services=DHCP");
 			
 			response.sendRedirect("/FiveHundredNet/BlueCat/DeletePage?choose=OneIPAddress");
 			String userName=(String) session.get("userName");
