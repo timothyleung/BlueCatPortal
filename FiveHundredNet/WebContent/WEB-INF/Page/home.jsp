@@ -4,6 +4,8 @@
 <head>
 <title>HKBU DHCP Portal</title>
 <link rel="stylesheet" type="text/css" href="/FiveHundredNet/Css/Base.css">
+<link href="/FiveHundredNet/Css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
 	<jsp:include page="/WEB-INF/Page/base.jsp" />

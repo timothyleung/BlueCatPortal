@@ -3,6 +3,8 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="/FiveHundredNet/Css/Base.css">
+<link href="/FiveHundredNet/Css/bootstrap.min.css" rel="stylesheet">
+
 <title>Bluecat IPAM Protal - Import Page</title>
 <script type="text/javascript">
 	function doIt() {

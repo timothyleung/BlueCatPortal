@@ -156,3 +156,14 @@ function checkalldel(){
 		</div>
 	</div>
 </div>
+<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+  <div class="container-fluid ">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <p class="navbar-brand" >edvance technology &copy; 2015 &middot; English (US)</p>
+    </div>
+
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+ 
+</nav>

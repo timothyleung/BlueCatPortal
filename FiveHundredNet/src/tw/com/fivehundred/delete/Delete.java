@@ -88,8 +88,6 @@ public class Delete extends ActionSupport {
 					jump_login = false;
 				}
 				if (jump.equals("oneMACCheck")) {
-					System.out.println("5");
-
 					session.put("MAC_Address", MAC_Address);
 					requst.setAttribute("ContentPage",
 							"/WEB-INF/ContentPage/Delete/OneMACAddressCheck.jsp");
@@ -112,8 +110,6 @@ public class Delete extends ActionSupport {
 					jump_login = false;
 				}
 				if (jump.equals("oneMACDelete")) {
-					System.out.println("6");
-
 					session.put("select_servers", select_servers);
 					session.put("MAC_Address", MAC_Address);
 					requst.setAttribute("ContentPage",
@@ -125,8 +121,6 @@ public class Delete extends ActionSupport {
 					jump_login = false;
 				}
 				if (jump.equals("multi")) {
-					System.out.println("7");
-
 					session.put("select_servers", select_servers);
 					session.put("choose", choose_delete);
 					requst.setAttribute("ContentPage",
