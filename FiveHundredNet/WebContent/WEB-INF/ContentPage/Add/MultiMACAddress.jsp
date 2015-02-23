@@ -14,6 +14,6 @@
 	<hans:MultiMACAddressChoice /> 
 	<a href="/FiveHundredNet/BlueCat/DownPage">Demonstration Files</a><br />
 	<input type="file" name="fileData" size="20" accept=".csv" value=".csv" /><br>
-	<input type="submit" value="Read">
+	<input class='btn btn-default' type="submit" value="Read">
 </form>
 

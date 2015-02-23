@@ -32,7 +32,7 @@ public class OneMACAddressAdd extends TagSupport {
 	@Override
 	public int doStartTag() throws JspException {
 
-		// CHECK完, 按ADD 或 OVERWRITE會進來
+		// CHECK嚙踝蕭, 嚙踝蕭ADD 嚙踝蕭 OVERWRITE嚙罵嚙箠嚙踝蕭
 		HttpServletRequest request = (HttpServletRequest) this.pageContext
 				.getRequest();
 		HttpServletResponse response = ServletActionContext.getResponse();
@@ -50,28 +50,17 @@ public class OneMACAddressAdd extends TagSupport {
 			APIEntity config = service.getEntityByName(0, select_config,
 					ObjectTypes.Configuration);
 			long id = config.getId();
-			// 刪除IP
-			/*APIEntity config7 = service.getIP4Address(id,
-					oneMacAddress.getIP_Address());
-			if (config7 != null) {
-				service.delete(config7.getId());
-			}*/
 
-			// 若overwrite就先刪所有mac關聯的ip
 			String DuplicatedIP = "";
 			String overwrite = (String) session.get("overwrite");
 			if (overwrite==null){
 				overwrite="";
 			}
 			if (overwrite.equals("1")) {
-
-				// 刪除重覆的 ip
 				try {
 					APIEntity config_mac = service.getMACAddress(id, oneMacAddress.getMAC_Address());
-					// harry 讀取與mac相關的ip
 					APIEntity[] mac_ip_array = service.getLinkedEntities( config_mac.getId(), ObjectTypes.IP4Address, 0, 100);
 
-					// 這邊要把所有mac_ip_array的值都印出來
 					if (mac_ip_array.length > 0) {
 						for (int x = 0; x < mac_ip_array.length; x++) {
 							DuplicatedIP = Tools.getIPbyADDRESSstring(mac_ip_array[x].getProperties());
@@ -81,16 +70,13 @@ public class OneMACAddressAdd extends TagSupport {
 							}
 						}
 					}
-					//刪mac
+					//嚙磋mac
 					service.delete(config_mac.getId()); 
 					
 				} catch (Exception ex) {
 
 				}
-
-				// 刪除重覆的 mac
 				try { 
-					// 若單一ip, 就撿查該ip資訊
 					APIEntity config_ip = service.getIP4Address(id,oneMacAddress.getIP_Address());
 					if (config_ip != null) { 
 						service.delete(config_ip.getId()); 
@@ -106,9 +92,6 @@ public class OneMACAddressAdd extends TagSupport {
 				
 			}
 
-			// 將mac address加入
-			// EntityProperties props0 = new EntityProperties();
-			// props0.addProperty(ObjectProperties.name, "hans");
 			String user_defined = "";
 			if (oneMacAddress.getMachine_Type() != null) {
 				user_defined = user_defined + "ip_machine_type="
@@ -155,26 +138,20 @@ public class OneMACAddressAdd extends TagSupport {
 
 			try {
 				long mac_long = service.addMACAddress(id, oneMacAddress.getMAC_Address(), "|");
-				// 加入ip
+				// 嚙稼嚙皚ip
 				long ip_ans = service.assignIP4Address(id, oneMacAddress.getIP_Address(), oneMacAddress.getMAC_Address(), "|",
 						"MAKE_DHCP_RESERVED", user_defined);
 				session.put("select_config", select_config);
-				/*session.put("erroMessage", oneMacAddress.getMAC_Address()
-						+ " has joined");*/
-				// harry
-				// APIEntity service_data = service.getEntityByName(id,
-				// oneMacAddress.getServers(), ObjectTypes.Server);
-				// service.deployServer(service_data.getId());
 				APIEntity service_data = service.getEntityByName(id, serverid1, ObjectTypes.Server);
 				service.deployServerServices(service_data.getId(), "services=DHCP");
 				APIEntity service_data2 = service.getEntityByName(id, serverid2, ObjectTypes.Server);
 				service.deployServerServices(service_data2.getId(), "services=DHCP");
 
-				// 重覆所以出錯
 				OneMacAddress oneMacAddress1 = new OneMacAddress();
 				session.put("one_data", oneMacAddress1);
+				System.out.println("Sending redirect to oneMACAddress");
 				response.sendRedirect("/FiveHundredNet/BlueCat/AddPage?choose=OneMACAddress");
-				
+				System.out.println("sent?");
 				String userName = (String) session.get("userName");
 				String log_Content = userName + "," + "MAC Address" + ","
 						+ oneMacAddress.getMAC_Address() + "," + "Add" + ","
@@ -191,7 +168,7 @@ public class OneMACAddressAdd extends TagSupport {
 				
 				e.printStackTrace();
 				if (e.toString().equals("Duplicate of another item")) {
-					// 加入ip
+					// 嚙稼嚙皚ip
 					long ip_ans = service.assignIP4Address(id,
 							oneMacAddress.getIP_Address(),
 							oneMacAddress.getMAC_Address(), "|",

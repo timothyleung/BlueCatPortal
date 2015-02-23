@@ -1,5 +1,10 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
-<script type='text/javascript' src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
+<script type="text/javascript" src="/FiveHundredNet/js/jquery-2.1.3.min.js"></script>
+
+<script type="text/javascript" src="/FiveHundredNet/js/bootstrap.min.js"></script>
+<link href="/FiveHundredNet/Css/bootstrap.min.css" rel="stylesheet">
+<link href="/FiveHundredNet/Css/common.css" rel="stylesheet">
+
 <script>
 function showip1(){
 	document.getElementById("oneMacAddress.IP_Address").style.display="";
@@ -125,45 +130,72 @@ function checkalldel(){
             });
         });
 </script>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">HKBU DHCP Portal</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+          <li class="dropdown ${not empty add? 'active' : '' }">
+          <a href="/FiveHundredNet/BlueCat/AddPage?choose=OneMACAddressShow" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/FiveHundredNet/BlueCat/AddPage?choose=OneMACAddressShow">Single IP/MAC Address</a></li>
+            <li class="divider"></li>
+            <li><a href="/FiveHundredNet/BlueCat/AddPage?choose=MultiMACAddress">Bulk IP/MAC Address</a></li>
+          </ul>
+        </li>
+        <li class="dropdown ${not empty delete? 'active' : '' }">
+          <a href="/FiveHundredNet/BlueCat/DeletePage?choose=DeleteData" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Deletion <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/FiveHundredNet/BlueCat/DeletePage?choose=DeleteData">Single IP Address</a></li>
+            <li><a href="/FiveHundredNet/BlueCat/DeletePage?choose=OneMACAddress">Single MAC Address</a></li>
+            <li class="divider"></li>
+            <li><a href="/FiveHundredNet/BlueCat/DeletePage?choose=MultiMACAddress">Bulk IP/MAC Address</a></li>
+          </ul>
+        </li>
+        <li class="${not empty history? 'active' : '' }"><a href="/FiveHundredNet/BlueCat/HistoryPage?choose=HistoryData">Change Log</a></li>
+        <li class="${not empty seach? 'active' : '' }"><a href="/FiveHundredNet/BlueCat/SeachPage?choose=SeachData">Search </a></li>
+ 
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">        
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">${userName}<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/FiveHundredNet/BlueCat/LogOutPage">Log Out</a></li>
+
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+
 <div id="wrap">
-	<div id="header">
-		<div>
-			<h1>HKBU DHCP Portal</h1>
-		</div>
-	</div>
-	<div id="menu">
-		<ul>
-			<li ${add}><a href="/FiveHundredNet/BlueCat/AddPage?choose=OneMACAddressShow">Import</a></li>
-			<li ${delete}><a 
-				href="/FiveHundredNet/BlueCat/DeletePage?choose=DeleteData">Deletion</a></li>
-			<li ${history}><a 
-				href="/FiveHundredNet/BlueCat/HistoryPage?choose=HistoryData">Change log</a></li>
-			<li ${seach}><a  href="/FiveHundredNet/BlueCat/SeachPage?choose=SeachData">Search</a></li>
-			<li><a href="/FiveHundredNet/BlueCat/LogOutPage">Log out</a></li>
-		</ul>
-		<div class="clear"></div>
-	</div>
-	<div>
-		<table>
-			<tr>
-				<td width="80%">User : ${userName}</td>
-			</tr>
-		</table>
-	</div>
+
 	<div id="main">
 		<div id="conter">
-			<jsp:include page="${whichPage}"></jsp:include>
+			<jsp:include page="${ContentPage}"></jsp:include>
 		</div>
 	</div>
 </div>
 <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
-  <div class="container-fluid ">
+
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <p class="navbar-brand" >edvance technology &copy; 2015 &middot; English (US)</p>
+      <p class="navbar-brand" style='font-size:small'>edvance technology &copy; 2015 &middot; English (US)</p>
     </div>
-
     </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
  
 </nav>

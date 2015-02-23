@@ -46,14 +46,15 @@ public class OneMACAddressCheck extends TagSupport {
 		String message_ip = "";
 		String container_Status = "";
 		boolean mac_repeat = false;
-		// ÀË¬d
+		// ï¿½ï¿½ï¿½d
 		APIEntity config;
-		String DuplicatedIP="";//·íMAC­«ÂÐ®É,§ä¥X­«ÂÐªºIP
-		String DuplicatedMAC="";//·íIP­«ÂÐ®É,§ä¥X­«ÂÐªºMAC
-		
+		String DuplicatedIP="";//ï¿½ï¿½MACï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IP
+		String DuplicatedMAC="";//ï¿½ï¿½IPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½MAC
+		final String page_title = "Checking Single IP/MAC Address";
+
 		long id = 0;
 		if (oneMacAddress.getMAC_Address().trim().length() > 0) {
-			// ÀË¬dMac Address
+			// ï¿½ï¿½ï¿½dMac Address
 			String[] mac_array = oneMacAddress.getMAC_Address().trim()
 					.split("-");
 			if (mac_array.length == 1) {
@@ -86,16 +87,16 @@ public class OneMACAddressCheck extends TagSupport {
 								ObjectTypes.Configuration);
 						id = config.getId();
 						try {
-							// §ì¸ê®Æ®w¸Ìªºmac address
+							// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½wï¿½ï¿½ï¿½ï¿½mac address
 							APIEntity config_mac = service.getMACAddress(id,
 									oneMacAddress.getMAC_Address());
 							if (config_mac != null) {
 								
-								//harry Åª¨ú»Pmac¬ÛÃöªºip
+								//harry ï¿½ï¿½ï¿½ï¿½ï¿½Pmacï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ip
 								APIEntity[] mac_ip_array=service.getLinkedEntities(config_mac.getId(),ObjectTypes.IP4Address,0,100);
 								
 								DuplicatedIP="No Ip Data";
-								//³oÃä­n§â©Ò¦³mac_ip_arrayªº­È³£¦L¥X¨Ó
+								//ï¿½oï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mac_ip_arrayï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½Xï¿½ï¿½
 								if (mac_ip_array.length>0){
 									DuplicatedIP =Tools.getIPbyADDRESSstring(mac_ip_array[0].getProperties()) ;
 								}
@@ -117,7 +118,7 @@ public class OneMACAddressCheck extends TagSupport {
 		} else {
 			message_mac = "Incorrect MAC Address: Please check MAC address format";
 		}
-		// ÀË¬dip
+		// ï¿½ï¿½ï¿½dip
 		boolean check_ip = false;
 		if (oneMacAddress.getIP_Address().trim().length() > 0) {
 			String[] Network = oneMacAddress.getIP_Address().trim().split("/");
@@ -142,12 +143,12 @@ public class OneMACAddressCheck extends TagSupport {
 												.equals(ip_adress + ".0")) {
 									message_ip = "System Uses IP, Can Not Be Used";
 								} else {
-									//­Y³æ¤@ip, ´N¾ß¬d¸Óip¸ê°T
+									//ï¿½Yï¿½ï¿½ï¿½@ip, ï¿½Nï¿½ï¿½ï¿½dï¿½ï¿½ipï¿½ï¿½ï¿½T
 									APIEntity config_ip = service
 											.getIP4Address(id, oneMacAddress
 													.getIP_Address());
 									if (config_ip != null) {
-										//­«ÂÐmac
+										//ï¿½ï¿½ï¿½ï¿½mac
 										DuplicatedMAC=Tools.getMACbyMACADDRESSstring(config_ip.getProperties()); 
 										message_ip = "Duplicated IP Address";
 									}
@@ -166,7 +167,7 @@ public class OneMACAddressCheck extends TagSupport {
 			}
 		}
 		if (oneMacAddress.getIP_Address().trim().length() == 0 || check_ip) { 
-			//À³¸Ó¥Î assignNextAvailableIP4Address() 
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ assignNextAvailableIP4Address() 
 			String[] Network = oneMacAddress.getIP_Address_NetWork().trim().split("/");
 			if (Network[1].indexOf("[")>0)
 			{
@@ -189,7 +190,7 @@ public class OneMACAddressCheck extends TagSupport {
 							String ip_adress0 = ip_marray[0] + "."
 									+ ip_marray[1] + "." + ip_marray[2];
 							if (Network[0].equals(ip_adress0 + ".0")) {
-								// ©Ò¦³¦³¥Î¨ìªºipNetwork
+								// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ipNetwork
 								APIEntity[] fields = service
 										.searchByObjectTypes(
 												Tools.getIPNETWORKwithoutName(oneMacAddress.getIP_Address_NetWork()),
@@ -216,62 +217,6 @@ public class OneMACAddressCheck extends TagSupport {
 											+ ip_address[2];
 									if (Integer.parseInt(Network[1]) == Integer
 											.parseInt(network_submast)) {
-										/*
-										// ©Ò¦³¦³¥Î¨ìªºip
-										APIEntity[] fields1 = Tools
-												.getAllIPAddress(service, id);
-										String ip_adress = "";
-										String mac_adress = "";
-										String status_adress = "";
-										ArrayList<String> ip_list = new ArrayList<String>();
-										ArrayList<String> mac_list = new ArrayList<String>();
-										ArrayList<String> status_list = new ArrayList<String>();
-										for (int i = 0; i < fields1.length; i++) {
-											if (fields1[i].getProperties().indexOf("address=") != -1) {
-												ip_adress = Tools.getIPbyADDRESSstring(fields1[i].getProperties()).replace("-", "");
-												 
-											}
-											if (fields1[i].getProperties().indexOf("state=") != -1) {
-												status_adress = Tools.getIPbySTATEstring(fields1[i].getProperties());
-														 
-											}
-											if (fields1[i].getProperties().indexOf("macAddress=") != -1) {
-												mac_adress = Tools.getMACbyMACADDRESSstring(fields1[i].getProperties());
-														 
-											}
-											ip_list.add(ip_adress);
-											mac_list.add(mac_adress);
-											status_list.add(status_adress);
-										}*/
-										//­n§ï¥Î NEXT AVAILED FUNCTION
-										/*String can_use_ip = "";
-										boolean ip_ans = false;
-										int cont = 0;
-										for (int i = 1; i < 255; i++) {
-											cont = 0;
-											for (int j = 0; j < ip_list.size(); j++) {
-												if (ip_list.get(j).equals(ip4Network + "." + i)) {
-													if (mac_list.get(j).length() == 0) {
-														if (status_list.get(j).length() != 0) {
-															APIEntity config7 = service.getIP4Address(id,	ip4Network+ "."+ i);
-															service.delete(config7.getId());
-														}
-														ip_ans = true;
-														break;
-													}
-												} else {
-													cont++;
-												}
-											}
-											if (cont == ip_list.size()) {
-												ip_ans = true;
-											}
-											if (ip_ans) {
-												can_use_ip = ip4Network + "."
-														+ i;
-												break;
-											}
-										}*/
 										
 										String can_use_ip=service.getNextAvailableIP4Address(fields[0].getId());
 										
@@ -301,13 +246,8 @@ public class OneMACAddressCheck extends TagSupport {
 		}
 
 		try {
-			/*out.write("<table><tr><td>Bluecat servers :");
-			out.write("<input type='text' name='oneMacAddress.Servers"
-					+ "' readonly='readonly' value='"
-					+ oneMacAddress.getServers()
-					+ "'style='border:1px;border-bottom-style:none;border-top-style:none;border-left-style:none;border-right-style:none;'"
-					+ "/>");
-			out.write("</td></tr></table>");*/
+			out.write("<h1>" + page_title +"</h1><br>");
+
 			
 			out.write("<table cellspacing='0' width='200%' border='1' borderColor='#DEE6EE'>");
 			for (int i = 0; i < title.length; i++) {
@@ -410,7 +350,7 @@ public class OneMACAddressCheck extends TagSupport {
 				out.write("</td></tr>");
 			}
 			out.write("</table>");
-			// mac ¥i¥H­«½Æ ¦ý¬O ip¤£¦æ
+			// mac ï¿½iï¿½Hï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½O ipï¿½ï¿½ï¿½ï¿½
 			if (message_ip.length() == 0 && message_mac.length() == 0) {
 				out.write("<input type='submit' value='Add' onclick=\"form1.action='/FiveHundredNet/BlueCat/AddPage?choose=check&jump=oneAdd'\">");
 				out.write("<input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=AddPage&log=userCancel'\">");

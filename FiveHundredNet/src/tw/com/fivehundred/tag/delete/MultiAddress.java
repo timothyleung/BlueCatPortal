@@ -57,7 +57,7 @@ public class MultiAddress extends TagSupport {
 			config = service.getEntityByName(0, select_config,
 					ObjectTypes.Configuration);
 			id = config.getId();
-			// §ì¨úConfiguration¸Ì©Ò¦³ªºmac address
+			// ï¿½ï¿½ï¿½ï¿½Configurationï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mac address
 			fields = Tools.getAllMacAddress(service, id);
 			String check_MACAddress = "";
 			boolean show_ip = true;
@@ -107,9 +107,9 @@ public class MultiAddress extends TagSupport {
 						boolean mac_repeat = false;
 						
 						if (ip_choice.equals("mac")){
-						// ÀË¬dMac
+						// ï¿½ï¿½ï¿½dMac
 						if (data[0].trim().length() > 0) {  
-							// ÀË¬dMac Address
+							// ï¿½ï¿½ï¿½dMac Address
 							String[] mac_array = data[0].trim().split("-");
 							if (mac_array.length == 1) {
 								mac_array = data[0].split(":");
@@ -139,11 +139,11 @@ public class MultiAddress extends TagSupport {
 									//show_mac = false;
 								} else {
 									check_MACAddress = checkMACAddress(fields,data[0].trim());
-									// ¶}©lÅã¥Ü¿é¥X
+									// ï¿½}ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½X
 									if (check_MACAddress.equals("repeat")) {
-										//­n¦A§ä¥XÃöÁp±oip
+										//ï¿½nï¿½Aï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½pï¿½oip
 										APIEntity config7 = service.getMACAddress(id, data[0].trim()); 
-										//§ä¥X¬ÛÃöip
+										//ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½ip
 										APIEntity[] mac_ip_array=service.getLinkedEntities(config7.getId(),ObjectTypes.IP4Address,0,100);
 										if (mac_ip_array!=null && mac_ip_array.length>0){
 										String IP_addr = Tools.getIPbyADDRESSstring(mac_ip_array[0].getProperties()); 
@@ -166,7 +166,7 @@ public class MultiAddress extends TagSupport {
 						}
 						
 						if (ip_choice.equals("ip")){
-						// ÀË¬dip ­ì¥»ÀË¬d data[1]¥þ§ï¬°ÀË¬ddata[0]
+						// ï¿½ï¿½ï¿½dip ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½d data[1]ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ddata[0]
 						if (data[0].trim().length() > 0) {
 							String[] ip_marray = data[0].trim().split("\\.");
 							if (ip_marray.length != 4) {
@@ -189,7 +189,7 @@ public class MultiAddress extends TagSupport {
 													.getIP4Address(id, data[0]);
 											if (config_ip != null) {
 												//show_ip = true;
-												//­n¦A§ä¥XÃöÁp±omac 
+												//ï¿½nï¿½Aï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½pï¿½omac 
 												String mac_addr= Tools.getMACbyMACADDRESSstring(config_ip.getProperties());
 												data[1] =mac_addr;
 												
@@ -224,7 +224,7 @@ public class MultiAddress extends TagSupport {
 						for (int j = 0; j < 3; j++) {
 							if (j < 2) {
 								out.write("<td align=left>" + data[j]);
-								// 1=> 0 ³£§ï¦b²Ä¤@Äæ¦ì¤F
+								// 1=> 0 ï¿½ï¿½ï¿½ï¿½ï¿½bï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½F
 								if (j == 0 && message_ip.length() != 0) {
 									out.write("<br><FONT COLOR='#FF0000'>("
 											+ message_ip + ")</FONT>");
@@ -252,14 +252,14 @@ public class MultiAddress extends TagSupport {
 					}
 					System.out.println(erro_number+"|"+((file_data.length-1)*2));
 					if(erro_number!=((file_data.length-1)*2)){						
-						out.write("</table><input type='button' value='Delete' onclick=\"return checkalldel();\">");
-						out.write("</table><input type='button' value='Back' onclick=\"top.location='/FiveHundredNet/BlueCat/DeletePage?choose=MultiMACAddress'\">");
+						out.write("</table><input class=\"btn btn-default\" type='button' value='Delete' onclick=\"return checkalldel();\">");
+						out.write("</table><input class=\"btn btn-default\"  type='button' value='Back' onclick=\"top.location='/FiveHundredNet/BlueCat/DeletePage?choose=MultiMACAddress'\">");
 						
 					}else{
-						out.write("</table><input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=noData'\">");
+						out.write("</table><input class=\"btn btn-default\"  type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=noData'\">");
 					}
 				} else {
-					out.write("</table><input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=noData'\">");
+					out.write("</table><input class=\"btn btn-default\" type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=noData'\">");
 				}
 				out.write("<input type='hidden' name='ip_choice' id='ip_choice' value='"+ip_choice+"' />");
 			} else {

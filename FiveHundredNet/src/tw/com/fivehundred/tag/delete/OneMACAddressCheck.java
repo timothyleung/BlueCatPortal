@@ -47,9 +47,9 @@ public class OneMACAddressCheck extends TagSupport {
 			APIEntity config;
 			long id = 0;
 			boolean check = false;
-			// ÀË¬dMAC
+			// ï¿½ï¿½ï¿½dMAC
 			if (MAC_Address.trim().length() > 0) {
-				// ÀË¬dMac Address
+				// ï¿½ï¿½ï¿½dMac Address
 				String[] MAC_marray = MAC_Address.trim().split("-");
 				if (MAC_marray.length == 1) {
 					MAC_marray = MAC_Address.split(":");
@@ -86,7 +86,7 @@ public class OneMACAddressCheck extends TagSupport {
 									APIEntity[] mac_ip_array=service.getLinkedEntities(config_MAC.getId(),ObjectTypes.IP4Address,0,100);
 									
 									message_IP="No Ip Data";
-									//³oÃä­n§â©Ò¦³mac_ip_arrayªº­È³£¦L¥X¨Ó
+									//ï¿½oï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mac_ip_arrayï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½Xï¿½ï¿½
 									if (mac_ip_array.length>0){
 										message_IP =Tools.getIPbyADDRESSstring(mac_ip_array[0].getProperties()) ;
 									} 
@@ -110,7 +110,7 @@ public class OneMACAddressCheck extends TagSupport {
 
 			// ------------------------------
 			String[] data = { "", "", "", "", "", "", "", "" };
-			// §ì¨úConfiguration¸Ì©Ò¦³ªºmac address
+			// ï¿½ï¿½ï¿½ï¿½Configurationï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mac address
 			APIEntity config_MAC1 = null;
 			if (MAC_Address.length() != 0) {
 				config_MAC1 = service.getMACAddress(id, MAC_Address);
@@ -152,20 +152,7 @@ public class OneMACAddressCheck extends TagSupport {
 					}
 				}
 			}
-			// ------------------------------
-			/*
-			out.write("<table><tr><td>Bluecat servers :");
-			APIEntity[] servers;
-			servers = service.getEntities(id, ObjectTypes.Server, 0, 999);
-			out.write("<select name='select_servers'>");
-			for (int i = 0; i < servers.length; i++) {
-				out.write("<option vaule='" + servers[i].getName() + "'>"
-						+ servers[i].getName() + "</option>");
-			}
-			out.write("</select>");
-			out.write("</td></tr></table>");*/
-			// ¨q¸ÑªG
-			out.write("<table cellspacing='0' width='200%' border='1' borderColor='#DEE6EE'>");
+			out.write("<table class=\"table table-striped table-hover table-bordered\">");
 			for (int i = 0; i < title.length; i++) {
 				out.write("<tr><td align=left>" + title[i] + "</td><td>");
 				out.write("<input type='text' name='"
@@ -181,11 +168,11 @@ public class OneMACAddressCheck extends TagSupport {
 			out.write("</table>");
 			if (!check) {
 				out.write("<FONT COLOR='#FF0000'>(" + message_MAC + ")</FONT>");
-				out.write("<br><input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=macCheckErro'\">");
+				out.write("<br><input class=\"btn btn-default\"  type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=macCheckErro'\">");
 			} else {
 				//out.write("<FONT COLOR='#FF0000'>(" + message_MAC + ")</FONT>");
-				out.write("<br><input type='submit' value='Delete' onclick=\"form1.action='/FiveHundredNet/BlueCat/DeletePage?choose=check&jump=oneMACDelete'\">");
-				out.write("<input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=macUserCancels'\">");
+				out.write("<br><input class=\"btn btn-default\"  type='submit' value='Delete' onclick=\"form1.action='/FiveHundredNet/BlueCat/DeletePage?choose=check&jump=oneMACDelete'\">");
+				out.write("<input class=\"btn btn-default\"  type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=macUserCancels'\">");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

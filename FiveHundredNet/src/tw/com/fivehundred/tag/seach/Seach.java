@@ -10,12 +10,15 @@ import javax.servlet.jsp.tagext.TagSupport;
 public class Seach extends TagSupport {
 	private String title[] = { "Option : ","Key word search : "};
 	private String data[] = { "MAC Address","IP Address","Machine type","Location","Owner" ,"Department" };
+	private final static String page_title = "Search";
+
 	@Override
 	public int doStartTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) this.pageContext
 				.getRequest();
 		JspWriter out = this.pageContext.getOut();
 		try {
+			out.write("<h1>" + page_title + "</h1><br>");
 			out.write("<tr>");
 			out.write("<td align=left>" + title[0] + "&nbsp;</td>");
 			out.write("<td><select name='select_ans'>");

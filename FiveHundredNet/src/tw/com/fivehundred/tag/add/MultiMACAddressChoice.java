@@ -39,6 +39,7 @@ public class MultiMACAddressChoice extends TagSupport {
 			"Location", "Owner", "Department", "Phone_Number", "Reference",
 			"Input_Date", "choose_data" };
 	private String read_error_message = "";
+	final String page_title = "Import Multi IP/MAC Addresses";
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -68,32 +69,16 @@ public class MultiMACAddressChoice extends TagSupport {
 				config = service.getEntityByName(0, select_config,
 						ObjectTypes.Configuration);
 				id = config.getId();
-				//harry§ï¼g¨S¦b¥Î¤F
-				// §ì¨úConfiguration¸Ì©Ò¦³ªºmac address
+				//harryï¿½ï¿½ï¿½gï¿½Sï¿½bï¿½ï¿½ï¿½F
+				// ï¿½ï¿½ï¿½ï¿½Configurationï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mac address
 				//fields = Tools.getAllMacAddress(service, id);
 			} catch (RemoteException e1) {
 				out.write("Please check error message");
 			}
-			//String check_MACAddress = "";
-			//boolean lock = false;
-			//boolean show = true;
-			 
-			
-			/*
-			out.write("<table><tr><td>Bluecat servers :");
-			APIEntity[] servers;
-			servers = service.getEntities(id, ObjectTypes.Server, 0, 999);
-			out.write("<select name='select_servers'>");
-			for (int i = 0; i < servers.length; i++) {
-				out.write("<option vaule='" + servers[i].getName() + "'>"
-						+ servers[i].getName() + "</option>");
-			}
-			out.write("</select>");
-			out.write("</td></tr></table>");*/
-
-			//harry
 			APIEntity[] IPNETWORKfields = Tools.getAllIPAddressNetwork(service, id);
 			String ip4Network = "";
+			out.write("<h1>" + page_title +"</h1><br>");
+
 			out.write("<table cellspacing='0' width='100%' border='1' borderColor='#DEE6EE'>");
 			out.write("<tr><th align=left><input type='radio' name='ip_choice' value='1' checked onclick='showip3()'>IP Address<input type='radio' name='ip_choice' value='2' onclick='showip4()'>IP Address NetWork</th><td>");
 			out.write("<select name='MultiMacAddress.IP_Address_NetWork' id='MultiMacAddress.IP_Address_NetWork' style='display:none'>");

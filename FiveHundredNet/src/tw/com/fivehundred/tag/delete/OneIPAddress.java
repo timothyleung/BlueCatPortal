@@ -11,6 +11,7 @@ public class OneIPAddress extends TagSupport {
 
 	private String title[] ={ "IP Address"};
 	private String vauleName[] = {"IP_Address"};
+	private final static String page_title = "Remove Single IP Address";
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -19,10 +20,10 @@ public class OneIPAddress extends TagSupport {
 		JspWriter out = this.pageContext.getOut();
 		try {
 			for (int i = 0; i < title.length; i++) {
-
+				out.write("<h1>" + page_title + "</h1><br>");
 				out.write("<tr><th align=left>" + title[i] + "</th><td>");
 
-				out.write("<input type='text' size='20' name='"
+				out.write("<input class=\"form-control\" type='text' size='20' name='"
 						+ vauleName[i] + "'"
 						+" onfocus=\"if (this.value=='xxx.xxx.xxx.xxx') this.value='';\" onblur=\"if (this.value=='') this.value='xxx.xxx.xxx.xxx';\" value=\"xxx.xxx.xxx.xxx\""
 						+">");

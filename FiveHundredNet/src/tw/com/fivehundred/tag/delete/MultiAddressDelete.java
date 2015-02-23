@@ -207,7 +207,7 @@ public class MultiAddressDelete extends TagSupport {
 						}
 						out.write("</tr>");
 					}
-					out.write("</table><input type='submit' value='Back'></form>");
+					out.write("</table><input class=\"btn btn-default\" type='submit' value='Back'></form>");
 				}
 			} else {
 				out.write("<tr><td>" + read_error_message + "</td></tr>");

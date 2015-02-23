@@ -25,16 +25,11 @@ public class OneMACAddress extends TagSupport {
 	private String title[] = { "MAC Address", "IP Address NetWork",
 			"IP Address", "Servers", "Machine Type", "Location", "Owner",
 			"Department", "Phone Number", "Input Date", "Reference" };
-	/*private String title[] = { "MAC Address", "IP Address NetWork",
-			"IP Address",   "Machine Type", "Location", "Owner",
-			"Department", "Phone Number", "Input Date", "Reference" };*/
-	//harry
+
 	private String vauleName[] = { "MAC_Address", "IP_Address_NetWork",
 			"IP_Address", "Servers", "Machine_Type", "Location", "Owner",
 			"Department", "Phone_Number", "Input_Date", "Reference" };
-	/*private String vauleName[] = { "MAC_Address", "IP_Address_NetWork",
-			"IP_Address", "Machine_Type", "Location", "Owner",
-			"Department", "Phone_Number", "Input_Date", "Reference" };*/
+
 	private SimpleDateFormat format = new SimpleDateFormat(
 			"yyyy/MM/dd HH:mm:ss");
 	private String demonstration_text[] = { "xx-xx-xx-xx-xx-xx", "",
@@ -55,7 +50,7 @@ public class OneMACAddress extends TagSupport {
 		//harry
 		select_config="hkbu";
 		if (select_config=="" || select_config==null){
-			select_config="hkbu";//"BDDS1"; bdds1§ì¤£¨ì 
+			select_config="hkbu";//"BDDS1"; bdds1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		}
 		session.remove("select_config");
 		OneMacAddress oneMacAddress = (OneMacAddress) session.get("one_data");
@@ -71,9 +66,13 @@ public class OneMACAddress extends TagSupport {
 		APIEntity[] fields = Tools.getAllIPAddressNetwork(service, id);
 		APIEntity[] servers = Tools.getAllServers(service, id);
 		String ip4Network = "", servers_name = "";
+		
+		final String page_title = "Import Single IP/MAC address";
+		
 		boolean not_null = false;
 		try {
 			
+			out.write("<h1>" + page_title +"</h1><br>");
 			//harry
 			out.write("<table cellspacing='0' width='180%' border='1' borderColor='#DEE6EE'>");
 			

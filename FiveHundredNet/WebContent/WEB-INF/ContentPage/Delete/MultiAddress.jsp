@@ -11,7 +11,7 @@
 	</div>
 	<hans:MultiMACAddressChoiceDel /> 
 	Demonstration Files : <a href="/FiveHundredNet/BlueCat/DownDelPagemac">Delete MAC </a> &nbsp; &nbsp;  <a href="/FiveHundredNet/BlueCat/DownDelPageip">Delete IP </a>  <br/>	
-	<input type="file" name="fileData" size="20" accept=".csv" value=".csv" /><br>
-	<input type="submit" value="Read" >
+	<input id="exampleInputFile" type="file" name="fileData" size="20" accept=".csv" value=".csv" /><br>
+	<input class="btn btn-default" type="submit" value="Read" >
 </form>
 

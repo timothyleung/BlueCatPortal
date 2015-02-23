@@ -21,9 +21,9 @@ import com.opensymphony.xwork2.ActionContext;
 public class HistoryList extends TagSupport {
 	private String title[] = { "NO", "User","Type", "Object", "Action","Result","Date","Change" };
 	// private String data[] = {
-	// "1","hans","2014/05/02","µn¤J","2","hans","2014/05/02","¼W¥[ip" };
+	// "1","hans","2014/05/02","ï¿½nï¿½J","2","hans","2014/05/02","ï¿½Wï¿½[ip" };
 	private String file_path;
-
+	final static String page_title="Log";
 	@Override
 	public int doStartTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) this.pageContext
@@ -49,6 +49,10 @@ public class HistoryList extends TagSupport {
 				}
 				list_data.add(data_cut_list);
 			}
+			out.write("<h1>" + page_title + "</h1><br>");
+			out.write("	<a id=\"export\" class=\"myButton\" download=\"logdata.csv\" href=\"#\">export</a> &nbsp;&nbsp; "
+					+ "<a id=\"clear\" class=\"myButton\" href=\"/FiveHundredNet/BlueCat/HistoryPage?choose=HistoryRemove\">clear log</a><br><br>");
+
 			out.write("<tr>");
 			for (int i = 0; i < title.length; i++) {
 				out.write("<td align=left>" + title[i] + "&nbsp;</td>");

@@ -66,7 +66,7 @@ public class Login extends ActionSupport {
 					
 					
 					
-					resqust.setAttribute("whichPage",
+					resqust.setAttribute("ContentPage",
 							"/WEB-INF/Menu/HomeMenu.jsp");
 					message = "";
 					requst.setAttribute("erroMessage", message);

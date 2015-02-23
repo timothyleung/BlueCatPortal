@@ -53,7 +53,6 @@ public class Add extends ActionSupport {
 			requst.setAttribute("delete", "");
 			requst.setAttribute("history", "");
 			requst.setAttribute("seach", "");
-			requst.setAttribute("whichPage", "/WEB-INF/Menu/LeftMenuForAdd.jsp");
 			String choose = requst.getParameter("choose");
 			String ip_choice = (requst.getParameter("ip_choice")!=null)?requst.getParameter("ip_choice"):""; 
 			String ip_choice_network=requst.getParameter("MultiMacAddress.IP_Address_NetWork");
@@ -68,7 +67,7 @@ public class Add extends ActionSupport {
 				jump_login = false;
 			}
 			if (choose.equals("OneMACAddressShow")) {
-				session.put("select_config", "hkbu");//BDDS1
+				session.put("select_config", "hkbu"); //BDDS1
 				OneMacAddress oneMacAddress1=(OneMacAddress) session.get("old_data");
 				if(oneMacAddress1!=null){	
 					session.remove("old_data");
@@ -78,8 +77,8 @@ public class Add extends ActionSupport {
 				}
 				requst.setAttribute("ContentPage",
 						"/WEB-INF/ContentPage/Add/OneMACAddress.jsp");
-				requst.setAttribute("oneMac", "style='background-color:#E7CDFF;'");
-				requst.setAttribute("multiMac", "");
+				requst.setAttribute("oneMac", "style='background-color:#E7CDFF;'"); //ignore
+				requst.setAttribute("multiMac", ""); // ignore
 				jump_login = false;
 			}
 			if (choose.equals("OneMACAddress")) {

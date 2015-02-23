@@ -41,6 +41,7 @@ public class MultiMACAddress extends TagSupport {
 			"Location", "Owner", "Department", "Phone_Number", "Reference",
 			"Input_Date", "choose_data" };
 	private String read_error_message = "";
+	final String page_title = "Multiple IP/MAC addresses Check";
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -75,7 +76,7 @@ public class MultiMACAddress extends TagSupport {
 				config = service.getEntityByName(0, select_config,
 						ObjectTypes.Configuration);
 				id = config.getId();
-				// §ì¨úConfiguration¸Ì©Ò¦³ªºmac address //ºC
+				// ï¿½ï¿½ï¿½ï¿½Configurationï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mac address //ï¿½C
 				fields = Tools.getAllMacAddress(service, id);
 			} catch (RemoteException e1) {
 				out.write("Please check error message");
@@ -83,16 +84,9 @@ public class MultiMACAddress extends TagSupport {
 			String check_MACAddress = "";
 			boolean lock = false;
 			boolean show = true;
+			out.write("<h1>" + page_title +"</h1><br>");
 
 			out.write("<table><tr><td>Bluecat servers : BDDS1 & BDDS2");
-			/*
-			 * APIEntity[] servers; servers = service.getEntities(id,
-			 * ObjectTypes.Server, 0, 999);
-			 * out.write("<select name='select_servers'>"); for (int i = 0; i <
-			 * servers.length; i++) { out.write("<option vaule='" +
-			 * servers[i].getName() + "'>" + servers[i].getName() +
-			 * "</option>"); } out.write("</select>");
-			 */
 			out.write("</td></tr></table>");
 
 			out.write("<table cellspacing='0' width='100%' border='1' borderColor='#DEE6EE'><tr>");
@@ -111,9 +105,9 @@ public class MultiMACAddress extends TagSupport {
 						String message_ip = "";
 						check_MACAddress = "";
 						boolean mac_repeat = false;
-						// ÀË¬d
+						// ï¿½ï¿½ï¿½d
 						if (data[0].trim().length() > 0) {
-							// ÀË¬dMac Address
+							// ï¿½ï¿½ï¿½dMac Address
 							String[] mac_array = data[0].trim().split("-");
 							if (mac_array.length == 1) {
 								mac_array = data[0].split(":");
@@ -142,7 +136,7 @@ public class MultiMACAddress extends TagSupport {
 								} else {
 									check_MACAddress = checkMACAddress(fields,
 											data[0].trim());
-									// ¶}©lÅã¥Ü¿é¥X
+									// ï¿½}ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½X
 									if (check_MACAddress.equals("repeat")) {
 										message_mac = "Record found"; // "Duplicated MAC Address";
 									}
@@ -157,9 +151,9 @@ public class MultiMACAddress extends TagSupport {
 						}
 						
 						
-						// ÀË¬dip
+						// ï¿½ï¿½ï¿½dip
 						if (ip_choice.equals("2")) {
-							// ­Y¬O¿ï ipnetwork ­n¥[¤W¦Û°Êµ¹ip
+							// ï¿½Yï¿½Oï¿½ï¿½ ipnetwork ï¿½nï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ip
 							
 							APIEntity[] networks = service.searchByObjectTypes(Tools.getIPNETWORKwithoutName(ip_choice_network),
 											ObjectTypes.IP4Network, 0, 9999);
@@ -167,7 +161,7 @@ public class MultiMACAddress extends TagSupport {
 							if (networks !=null){
 								can_use_ip=service.getNextAvailableIP4Address(networks[0].getId());
 							 
-								//·íassign ip³£¬Û¦P®É, ¥ý¤â°ÊDIY²£¥Í+1ªº IP
+								//ï¿½ï¿½assign ipï¿½ï¿½ï¿½ï¿½ï¿½Pï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DIYï¿½ï¿½ï¿½ï¿½+1ï¿½ï¿½ IP
 								if (!OldIP.equals(can_use_ip)){
 									//file_data[1]=can_use_ip;
 									data[1]=can_use_ip;
@@ -189,7 +183,7 @@ public class MultiMACAddress extends TagSupport {
 							}
 							message_ip = "System Assigned";		
 						} else {
-							// ­Y¬O¿ï ip ´NÀË¬dÀÉ®×¤º®e­È
+							// ï¿½Yï¿½Oï¿½ï¿½ ip ï¿½Nï¿½ï¿½ï¿½dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½eï¿½ï¿½
 							if (data[1].trim().length() > 0) {
 								String[] ip_marray = data[1].trim()
 										.split("\\.");
@@ -233,11 +227,11 @@ public class MultiMACAddress extends TagSupport {
 							}
 						}
 
-						// ¶}©lÅã¥Ü¿é¥X
+						// ï¿½}ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½X
 						try {
 							if (check_MACAddress.equals("one") && show) {
 								out.write("<tr  style='background:#FFCDE5'>");
-								//­n¦A§PÂ_ip¦³µL­«ÂÐ
+								//ï¿½nï¿½Aï¿½Pï¿½_ipï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½
 								if (message_ip.equals("Duplicated IP Address")){
 									lock = false;
 								}else{
@@ -298,17 +292,17 @@ public class MultiMACAddress extends TagSupport {
 					//if (erro_ip_number == file_data.length) {
 					if (erro_ip_number >1) {
 						out.write("</table>"); 
-						out.write("<input type='button' value='overwrite' onclick=\"return checkall();\">");
-						out.write("<input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=AddPage&log=multiCheckErro'\">");
+						out.write("<input class='btn btn-default' type='button' value='overwrite' onclick=\"return checkall();\">");
+						out.write("<input class='btn btn-default' type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=AddPage&log=multiCheckErro'\">");
 					} else { 
 						session.put("file_data", file_data);
 						
 						out.write("</table>");
-						out.write("<input type='button' value='Add' onclick=\"return checkall();\">");
-						out.write("<input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=MultiMACAddress&log=multiUserCancel'\">");
+						out.write("<input class='btn btn-default' type='button' value='Add' onclick=\"return checkall();\">");
+						out.write("<input class='btn btn-default' type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=MultiMACAddress&log=multiUserCancel'\">");
 					}
 				} else {
-					out.write("<input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=MultiMACAddress&log=noData'\">");
+					out.write("<input class='btn btn-default' type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=MultiMACAddress&log=noData'\">");
 				}
 			} else {
 				out.write("<tr><td>" + read_error_message + "</td></tr>");

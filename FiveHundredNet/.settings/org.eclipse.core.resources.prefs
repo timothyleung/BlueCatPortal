@@ -1,4 +1,13 @@
 eclipse.preferences.version=1
 encoding//src/tw/com/fivehundred/delete/Delete.java=UTF-8
+encoding//src/tw/com/fivehundred/tag/add/MultiMACAddress.java=UTF-8
+encoding//src/tw/com/fivehundred/tag/add/MultiMACAddressChoice.java=UTF-8
+encoding//src/tw/com/fivehundred/tag/add/OneMACAddress.java=UTF-8
+encoding//src/tw/com/fivehundred/tag/add/OneMACAddressAdd.java=UTF-8
+encoding//src/tw/com/fivehundred/tag/add/OneMACAddressCheck.java=UTF-8
+encoding//src/tw/com/fivehundred/tag/delete/MultiAddress.java=UTF-8
 encoding//src/tw/com/fivehundred/tag/delete/MultiAddressDelete.java=UTF-8
+encoding//src/tw/com/fivehundred/tag/delete/OneIPAddressCheck.java=UTF-8
 encoding//src/tw/com/fivehundred/tag/delete/OneIPAddressDelete.java=UTF-8
+encoding//src/tw/com/fivehundred/tag/delete/OneMACAddressCheck.java=UTF-8
+encoding//src/tw/com/fivehundred/tag/history/HistoryList.java=UTF-8

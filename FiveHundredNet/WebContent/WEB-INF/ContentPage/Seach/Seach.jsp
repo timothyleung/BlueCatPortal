@@ -10,9 +10,9 @@
 			</tr>
 		</table>
 	</div>
-	<table cellspacing="0" width="200%" border="1" borderColor='#DEE6EE'>
+	<table class="table table-striped table-hover table-bordered">
 		<hans:Seach />
 	</table>
-	<input type="submit" value="Search">
+	<input class='btn btn-default' type="submit" value="Search">
 </form>
 

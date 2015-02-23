@@ -41,7 +41,7 @@ public class OneIPAddressCheck extends TagSupport {
 			APIEntity config;
 			long id = 0;
 			boolean check=false;
-			// ÀË¬dip
+			// ï¿½ï¿½ï¿½dip
 			if (IP_Address.trim().length() > 0) {
 				String[] ip_marray = IP_Address.trim()
 						.split("\\.");
@@ -76,36 +76,19 @@ public class OneIPAddressCheck extends TagSupport {
 			} else {
 				message_ip = "Incorrect IP Address: Please check IP address format";
 			}
-			/*
-			out.write("<table><tr><td>Bluecat servers :");
-			APIEntity[] servers;
-			servers = service.getEntities(id, ObjectTypes.Server, 0, 999);
-			out.write("<select name='select_servers'>");
-			for (int i = 0; i < servers.length; i++) {
-				out.write("<option vaule='" + servers[i].getName() + "'>"
-						+ servers[i].getName() + "</option>");
-			}
-			out.write("</select>");
-			out.write("</td></tr></table>");*/
-			
-			//¨q¸ÑªG
-			out.write("<table cellspacing='0' width='200%' border='1' borderColor='#DEE6EE'>");
+			out.write("<table class=\"table table-striped table-hover table-bordered\">");
 			for (int i = 0; i < title.length; i++) {
 				out.write("<tr><td align=left>" + title[i] + "</td><td>");
-				out.write("<input type='text' name='IP_Address' readonly='readonly' value='"
-						+ IP_Address
-						+ "'style='border:1px;border-bottom-style:none;border-top-style:none;border-left-style:none;border-right-style:none;'/>");
-				out.write("</td><td>Mac Address : "+message_mac);
-				out.write("</td></tr>");
+				out.write("<input type='text' name='IP_Address' readonly='readonly' value=" + IP_Address + ">");
+				out.write("</td><td>Mac Address : "+ message_mac + "</td></tr>");
 			}
 			out.write("</table>");
 			if(!check){				
 				out.write("<FONT COLOR='#FF0000'>(" +message_ip+ ")</FONT>");
-				out.write("<br><input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=ipCheckErro'\">");
+				out.write("<br><input class=\"btn btn-default\"  type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=ipCheckErro'\">");
 			}else{
-				//out.write("<FONT COLOR='#FF0000'>(" +message_ip+ ")</FONT>");
-				out.write("<br><input type='submit' value='Delete' onclick=\"form1.action='/FiveHundredNet/BlueCat/DeletePage?choose=check&jump=oneIPDelete'\">");
-				out.write("<input type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=ipUserCancels'\">");
+				out.write("<br><input class=\"btn btn-default\"  type='submit' value='Delete' onclick=\"form1.action='/FiveHundredNet/BlueCat/DeletePage?choose=check&jump=oneIPDelete'\">");
+				out.write("<input class=\"btn btn-default\" type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=ipUserCancels'\">");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

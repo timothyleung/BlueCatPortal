@@ -14,6 +14,6 @@
 	<table cellspacing="0" width="200%" border="1" borderColor='#DEE6EE'>
 		<hans:OneMACAddress />
 	</table>
-	<input type="submit" value="Check" >
+	<input class="btn btn-default"type="submit" value="Check" >
 </form>
 
