@@ -49,6 +49,7 @@ public class Back extends ActionSupport {
 		erroMessage = (String) session.get("erroMessage");
 		String userName = (String) session.get("userName");
 		String log_Content = "";
+		boolean is_mac = false;
 		if (erroMessage != null) {
 			session.remove("erroMessage");
 		}
@@ -66,12 +67,12 @@ public class Back extends ActionSupport {
 					log_Content = userName + "," + "MAC Address" + ","
 							+ "" + "," + "Add"
 							+ "," + "Fail" + ","
-							+ Tools.getTime() + "," + "Check The Error¡A The User Cancels";
+							+ Tools.getTime() + "," + "Check The Errorï¿½A The User Cancels";
 				}
 				if (log.equals("multiCheckErro")) {
 					log_Content = userName + "," + "Multi Address" + ","
 							+ "" + "," + "Add" + "," + "Fail" + ","
-							+ Tools.getTime() + "," + "Multiple Mac Address Check The Error¡A The User Cancels";
+							+ Tools.getTime() + "," + "Multiple Mac Address Check The Errorï¿½A The User Cancels";
 				}
 				if (log.equals("multiUserCancel")) {
 					log_Content = userName + "," + "Multi Address" + ","
@@ -81,7 +82,7 @@ public class Back extends ActionSupport {
 				if (log.equals("noData")) {
 					log_Content = userName + "," + "Multi Address" + ","
 							+ "" + "," + "Add" + "," + "Fail" + ","
-							+ Tools.getTime() + "," + "Multiple Mac Address Did Not Upload Data¡A The User Cancels";
+							+ Tools.getTime() + "," + "Multiple Mac Address Did Not Upload Dataï¿½A The User Cancels";
 				}
 				LogMian.writeLog(log_Content, userName);
 				try {
@@ -96,13 +97,13 @@ public class Back extends ActionSupport {
 				if (log.equals("noData")) {
 					log_Content = userName + "," + "Multi Address" + ","
 							+ "" + "," + "Delete" + "," + "Fail" + ","
-							+ Tools.getTime() + "," + "Multiple Mac Address Check The Error¡A The User Cancels";
+							+ Tools.getTime() + "," + "Multiple Mac Address Check The Errorï¿½A The User Cancels";
 				}
 				if (log.equals("ipCheckErro")) {
 					log_Content = userName + "," + "IP Address" + ","
 							+ "" + "," + "Delete"
 							+ "," + "Fail" + ","
-							+ Tools.getTime() + "," + "Check The Error¡A The User Cancels";
+							+ Tools.getTime() + "," + "Check The Errorï¿½A The User Cancels";
 				}
 				if (log.equals("ipUserCancels")) {
 					log_Content = userName + "," + "IP Address" + ","
@@ -111,12 +112,14 @@ public class Back extends ActionSupport {
 							+ Tools.getTime() + "," + "The User Cancels";
 				}
 				if (log.equals("macCheckErro")) {
+					is_mac = true;
 					log_Content = userName + "," + "MAC Address" + ","
 							+ "" + "," + "Delete"
 							+ "," + "Fail" + ","
-							+ Tools.getTime() + "," + "Check The Error¡A The User Cancels";
+							+ Tools.getTime() + "," + "Check The Errorï¿½A The User Cancels";
 				}
 				if (log.equals("macUserCancels")) {
+					is_mac = true;
 					log_Content = userName + "," + "MAC Address" + ","
 							+ "" + "," + "Delete"
 							+ "," + "Fail" + ","
@@ -125,7 +128,12 @@ public class Back extends ActionSupport {
 
 				LogMian.writeLog(log_Content, userName);
 				try {
-					response.sendRedirect("/FiveHundredNet/BlueCat/DeletePage?choose=DeleteData");
+					// separte case for mac return
+					if(!is_mac){
+						response.sendRedirect("/FiveHundredNet/BlueCat/DeletePage?choose=DeleteData");
+					} else {
+						response.sendRedirect("/FiveHundredNet/BlueCat/DeletePage?choose=OneMACAddress");
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

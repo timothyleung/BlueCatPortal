@@ -22,9 +22,10 @@ public class OneMACAddress extends TagSupport {
 		HttpServletRequest request = (HttpServletRequest) this.pageContext
 				.getRequest();
 		JspWriter out = this.pageContext.getOut();
-
+		String page_title = "Single MAC Remove";
 
 		try {
+			out.write("<h1>" + page_title + "</h1><br>");
 			for (int i = 0; i < title.length; i++) {
 				out.write("<tr><th align=left>" + title[i] + "</th><td>");
 				out.write("<input type='text' size='20' name='"

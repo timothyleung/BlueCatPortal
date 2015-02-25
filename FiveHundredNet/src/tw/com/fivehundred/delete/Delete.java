@@ -110,6 +110,7 @@ public class Delete extends ActionSupport {
 					jump_login = false;
 				}
 				if (jump.equals("oneMACDelete")) {
+					System.out.println("Am I in oneMACDelete?? MAC_Address is : " + MAC_Address);
 					session.put("select_servers", select_servers);
 					session.put("MAC_Address", MAC_Address);
 					requst.setAttribute("ContentPage",
@@ -247,6 +248,7 @@ public class Delete extends ActionSupport {
 	}
 
 	public void setMAC_Address(String mAC_Address) {
+		System.out.println("I am in set mac address with mac = " + mAC_Address);
 		if (mAC_Address.equals("xx-xx-xx-xx-xx-xx")) {
 			MAC_Address = "";
 		} else {

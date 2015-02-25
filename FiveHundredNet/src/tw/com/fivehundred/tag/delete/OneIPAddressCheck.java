@@ -10,6 +10,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import tw.com.fivehundred.add.been.OneMacAddress;
+import tw.com.fivehundred.tool.AddressType;
 import tw.com.fivehundred.tool.Tools;
 
 import com.bluecatnetworks.proteus.api.client.java.constants.ObjectTypes;
@@ -35,63 +36,40 @@ public class OneIPAddressCheck extends TagSupport {
 				.get("ready_server");
 		request.setAttribute("select_config", select_config);
 		JspWriter out = this.pageContext.getOut();
+		String page_title = "Single IP Check";
+		boolean check = false;
 		try {
-			String message_ip = "";
-			String message_mac="";
 			APIEntity config;
 			long id = 0;
-			boolean check=false;
-			// ���dip
-			if (IP_Address.trim().length() > 0) {
-				String[] ip_marray = IP_Address.trim()
-						.split("\\.");
-				if (ip_marray.length != 4) {
-					message_ip = "Incorrect IP Address: Please check IP address format";
-				} else {
-					if (Tools.checkIPAddress(ip_marray)) {
-						message_ip = "Incorrect IP Address: Please check IP address format";
-					} else {
-						try {
-							config = service.getEntityByName(0, select_config,
-									ObjectTypes.Configuration);
-							id = config.getId();
-							try {
-								APIEntity config_ip = service.getIP4Address(id,
-										IP_Address);
-								if (config_ip != null) {
-									message_mac= Tools.getMACbyMACADDRESSstring(config_ip.getProperties());
-									check=true;
-									message_ip = "Record found";// "Duplicated MAC Address";
-								}else{
-									message_ip = "IP address record not found"; //"Free IP Address";
-								}
-							} catch (RemoteException e2) {
-								message_ip = "IP Address Check Failure: Please check input IP address ";
-							}
-						} catch (RemoteException e1) {
-							e1.printStackTrace();
-						}
-					}
+			APIEntity config_ip = null;
+			out.write("<h1>" + page_title +"</h1><br>");
+			out.write("<table class=\"table table-striped table-hover table-bordered\">");
+			out.write("<tr><td>IP Address</td><td>MAC Address</td></tr>");
+			if (Tools.checkIPAddress(IP_Address)) {
+				try {
+					config = service.getEntityByName(0, select_config,
+							ObjectTypes.Configuration);
+					id = config.getId();
+					config_ip = service.getIP4Address(id, IP_Address);
+					
+					int single_delete_indicator = 0;
+					check = Tools.single_deletion_check(out, config_ip, AddressType.IP, IP_Address, single_delete_indicator);
+
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
 				}
 			} else {
-				message_ip = "Incorrect IP Address: Please check IP address format";
-			}
-			out.write("<table class=\"table table-striped table-hover table-bordered\">");
-			for (int i = 0; i < title.length; i++) {
-				out.write("<tr><td align=left>" + title[i] + "</td><td>");
-				out.write("<input type='text' name='IP_Address' readonly='readonly' value=" + IP_Address + ">");
-				out.write("</td><td>Mac Address : "+ message_mac + "</td></tr>");
+				out.write("<tr><td colspan=\"100%\">" + IP_Address + " have an invalid format :( </td></tr>");
 			}
 			out.write("</table>");
-			if(!check){				
-				out.write("<FONT COLOR='#FF0000'>(" +message_ip+ ")</FONT>");
+			if (!check){
 				out.write("<br><input class=\"btn btn-default\"  type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=ipCheckErro'\">");
-			}else{
+			} else {
 				out.write("<br><input class=\"btn btn-default\"  type='submit' value='Delete' onclick=\"form1.action='/FiveHundredNet/BlueCat/DeletePage?choose=check&jump=oneIPDelete'\">");
-				out.write("<input class=\"btn btn-default\" type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=ipUserCancels'\">");
-			}
+				out.write("<input class=\"btn btn-default\" type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=ipUserCancels'\">");	
+			}			
+			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return super.doStartTag();

@@ -1,17 +1,21 @@
 package tw.com.fivehundred.tool;
 
 import java.io.File;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -57,7 +61,7 @@ public class Tools {
 	public static APIEntity[] getAllMacAddress(ProteusAPI_PortType service,
 			long id) {
 		
-		//³oÃä­n§ï..
+		//ï¿½oï¿½ï¿½ï¿½nï¿½ï¿½..
 		
 		APIEntity[] ans = null;
 		ArrayList<APIEntity> aPIEntity_list = new ArrayList<APIEntity>();
@@ -70,6 +74,7 @@ public class Tools {
 						1000 * count_number, 999);
 				count_number++;
 				for (int i = 0; i < fields.length; i++) {
+					System.out.println("Adding MACaddress into entity Tools.java, mac : " + fields[i].toString() + " " + fields[i].getProperties() + " " + fields[i].getName());
 					aPIEntity_list.add(fields[i]);
 				}
 			} while (fields.length == 999);
@@ -105,13 +110,13 @@ public class Tools {
 		}
 		return ans;
 	}
-	//ºC
+	//ï¿½C
 	public static APIEntity[] getAllIPAddress(ProteusAPI_PortType service,
 			long id) {
 		APIEntity[] ans = null;
 		ArrayList<APIEntity> aPIEntity_list = new ArrayList<APIEntity>();
-		// ¸Ó¦³ªºip
-		// ©Ò¦³¦³¥Î¨ìªºBLOCK
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ip
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BLOCK
 		APIEntity[] fields;
 		try {
 			fields = service.getEntities(id, ObjectTypes.IP4Block, 0, 9999);
@@ -122,7 +127,7 @@ public class Tools {
 					
 					container_cidr = getIPNETWORKbyCIDRstring( fields[j].getProperties()) ;
 				}
-				// ©Ò¦³ªºmac
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mac
 				int count_number = 0;
 				do {
 					fields1 = service.searchByObjectTypes(
@@ -155,8 +160,8 @@ public class Tools {
 			long id) {
 		APIEntity[] ans = null;
 		ArrayList<APIEntity> aPIEntity_list = new ArrayList<APIEntity>();
-		// ¸Ó¦³ªºip
-		// ©Ò¦³¦³¥Î¨ìªºBLOCK
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ip
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BLOCK
 		APIEntity[] Blocks;
 		try {
 			Blocks = service.getEntities(id, ObjectTypes.IP4Block, 0, 9999); //IP4Block IP4Network
@@ -178,28 +183,6 @@ public class Tools {
 					}
 				}
 				
-				//APIEntity networks=service.getEntityByCIDR(fields[j].getId(),container_cidr,ObjectTypes.IP4Network);
-				//APIEntity[] networks=service.getIP4NetworksByHint(fields[j].getId(),1000,999,ObjectTypes.IP4Network);//container_cidr.split("\\.")[0]);
-				
-				
-				
-				/*
-				ans = ArrayUtils.addAll(ans, ip4networks);
-				// ©Ò¦³ªºmac
-				int count_number = 0;
-				do {
-					fields1 = service.searchByObjectTypes( container_cidr.split("\\.")[0],
-							ObjectTypes.IP4Network, 1000 * count_number, 999);
-					
-					//String bb=fields1.;
-					
-					count_number++;
-					for (int i = 0; i < fields1.length; i++) {
-						aPIEntity_list.add(fields1[i]);
-					}
-				} while (fields1.length == 999);
-				*/
-				
 			}
 			
 		} catch (RemoteException e) {
@@ -217,9 +200,18 @@ public class Tools {
 		return temp;
 	 
 	  }
+	
+
+	/* Return true if it is not a valid mac address */
 	public static boolean checkMacAddress(String[] data) {
+		System.out.println("CHeckking mac address : " + data);
 		boolean ans = false;
 		for (int i = 0; i < data.length; i++) {
+			System.out.println("CHecking.. : " + data[i] + " " + data[i].length());
+			
+			if(data[i].length() > 2) {
+				return true;
+			}
 			for (int j = 0; j < data[i].length(); j++) {
 				switch (Character.toUpperCase(data[i].charAt(j))) {
 				case '0':
@@ -251,6 +243,7 @@ public class Tools {
 				break;
 			}
 		}
+		System.out.println("Result is : " + ans );
 		return ans;
 	}
 
@@ -297,7 +290,7 @@ public class Tools {
 	}
 
 	public static String[] readData(String original_data) {
-		String[] data = new String[9];
+		String[] data = new String[9]; // maybe reserve for machine type, etc.. ??
 		int a = 0;
 		String cont = "";
 		for (int i = 0; i < data.length; i++) {
@@ -328,9 +321,12 @@ public class Tools {
 		return Network[0];
 	}
 	public static String getIPbyADDRESSstring(String ADDRESSstring) {
+		System.out.println("GETipbyaddressstring = " + ADDRESSstring);
 		String ipstr = ADDRESSstring;
 		if (ipstr.indexOf("address=")>=0){
-		ipstr=ipstr.substring(ipstr.indexOf("address=")+8,ipstr.length());
+			ipstr=ipstr.substring(ipstr.indexOf("address=")+8,ipstr.length());
+		} else {
+			return "";
 		}
 		ipstr=ipstr.substring(0,ipstr.indexOf("|"));
 		String rtnvalue= ipstr;
@@ -345,11 +341,19 @@ public class Tools {
 		String rtnvalue= ipstr;
 		return rtnvalue;
 	}
+	
+	/**
+	 * extract macAddress from entity properties 
+	 * @param Mstring string that stored all the properties of the identity
+	 * @return mac address if found else return empty string
+	 */
 	public static String getMACbyMACADDRESSstring(String Mstring) {
 		boolean haveresult = false;
 		String ipstr = Mstring;
-		if (ipstr.indexOf("macAddress=")>=0){
-		ipstr=ipstr.substring(ipstr.indexOf("macAddress=")+11,ipstr.length());
+		String macKey = "macAddress=";
+		if (ipstr.indexOf(macKey)>=0){
+		ipstr=ipstr.substring(ipstr.indexOf(macKey)+macKey.length(),ipstr.length());
+		System.out.println("IP string in getmacbymacaddress : " + ipstr);
 		haveresult = true;
 		}
 		ipstr=ipstr.substring(0,ipstr.indexOf("|"));
@@ -360,4 +364,204 @@ public class Tools {
 		return rtnvalue;
 	}
 	
+	/**
+	 * TIM tools
+	 */
+
+	/**
+	 * 
+	 * @param out
+	 * @param entity config entity
+	 * @param type
+	 * @param data
+	 * @return
+	 * @throws IOException 
+	 */
+	public static boolean multiple_deletion_check(JspWriter out, ProteusAPI_PortType service, APIEntity entity, AddressType type, List<String> data) throws IOException{
+		long id = entity.getId();
+		APIEntity new_entity;
+		for (int i=0; i < data.size(); i++ ){
+			String mac_or_ip = data.get(i);
+			System.out.println("Multiple deletin check printing ip/mac : " + mac_or_ip);
+
+			if(type == AddressType.IP ){
+				String ip_address = mac_or_ip;
+				if (Tools.checkIPAddress(ip_address)){
+					new_entity = service.getIP4Address(id, mac_or_ip);
+					single_deletion_check(out, new_entity, type, mac_or_ip, i+1); 
+				} else {
+					// print invaid ip format
+					out.write("<tr><td colspan=\"100%\">" + ip_address + " have an invalid format :( </td></tr>");
+				}
+			} else if (type == AddressType.MAC){
+				String mac_address = mac_or_ip;
+				if (Tools.checkMacAddress(mac_address)){
+					new_entity = service.getMACAddress(id, mac_or_ip);
+					if(new_entity == null){
+						single_deletion_check(out,new_entity, AddressType.MAC, mac_or_ip, i+1);
+					} else {
+						APIEntity[] config_mac_array=service.getLinkedEntities(new_entity.getId(),ObjectTypes.IP4Address,0,100);
+						single_deletion_check(out,config_mac_array[0], AddressType.MAC, mac_or_ip, i+1);
+	
+					}
+				} else {
+					// print invalid mac format 
+					out.write("<tr><td colspan=\"100%\">" + mac_address + " have an invalid format :( </td></tr>");
+
+				}
+			}
+		}
+		return true;
+	}
+	/**
+	 * 
+	 * @param out
+	 * @param entity
+	 * @param type 
+	 * @param mac_or_ip 
+	 * @param index if index == 0 , it is single deletion  else multi deletion
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean single_deletion_check(JspWriter out, APIEntity entity, AddressType type, String mac_or_ip, int index) throws IOException{
+		if(entity == null){
+			out.write("<tr><td colspan=\"100%\">No record found for " + mac_or_ip + "</td></tr>");
+			return false;
+		}
+		
+		String mac_address, ip_address;
+		if (type == AddressType.IP){
+			System.out.println(entity);
+			System.out.println(entity.getProperties());
+
+			mac_address = Tools.getMACbyMACADDRESSstring(entity.getProperties());
+			ip_address = mac_or_ip;
+			if(index == 0){
+				// single case
+				if(mac_address.isEmpty()){
+					print_single_ip_mac_error(out, ip_address);
+					return false;
+				} else {
+					print_single_ip_mac_success(out, ip_address, mac_address);
+					return true;
+				}
+			} else {
+				// multiple case
+				if(mac_address.isEmpty()){
+					print_multiple_ip_mac_error(out, ip_address, index);
+					return false;
+				} else {
+					print_multiple_ip_mac_success(out, ip_address, mac_address, index);
+					return true;
+				}
+			}
+		} 
+		
+		// MAC type
+		
+		ip_address= Tools.getIPbyADDRESSstring(entity.getProperties());
+		mac_address = mac_or_ip;
+		if ( index == 0){
+			// single mac delete case 
+			if(ip_address.isEmpty()){
+				System.out.println("1");
+				print_single_mac_ip_error(out, mac_address);
+				return false;
+			} else {
+				System.out.println("2 mac , ip = " + mac_address + " " + ip_address);
+				print_single_mac_ip_success(out, mac_address, ip_address);
+				return true;
+			}			
+		} else {
+			// multi mac delete case 
+			if(ip_address.isEmpty()){
+				System.out.println("3");
+
+				print_multiple_mac_ip_error(out, mac_address, index);
+				return false;
+			} else {
+				System.out.println("4");
+
+				print_multiple_mac_ip_success(out, mac_address, ip_address, index);
+				return true;
+			}
+		}
+	}
+
+	private static void print_single_mac_ip_error(JspWriter out, String mac_address) throws IOException {
+		String error_msg = "No associated IP address found";
+		out.write("<tr><td>" + mac_address + "</td><td>" + error_msg + "</td></tr>");
+	}
+	
+	private static void print_single_mac_ip_success(JspWriter out, String mac_address, String ip_address) throws IOException {
+		out.write("<tr><td>");
+		print_single_input_attributes_mac(out, mac_address);
+		out.write("</td><td>");
+		print_single_input_attributes_ip(out, ip_address);
+		out.write("</td></tr>");
+	}
+	
+	private static void print_multiple_mac_ip_error(JspWriter out, String mac_address, int index) throws IOException{
+		String error_msg = "No associated MAC address found";
+		out.write("<tr><td>" + mac_address + "</td><td>" + error_msg + "</td><td>" 
+				+ "<input type='checkbox' name='choose_delete' value='" 
+				+ index +  "'></td></tr>");
+	}
+	
+	private static void print_multiple_mac_ip_success(JspWriter out, String ip_address, String mac_address, int index) throws IOException{
+		out.write("<tr><td>" + mac_address + "</td><td>" + ip_address + "</td><td>" 
+				+ "<input type='checkbox' name='choose_delete' value='" 
+				+ index +  "' checked></td></tr>");
+	}
+	
+	private static void print_single_ip_mac_error(JspWriter out, String ip_address) throws IOException{
+		String error_msg = "No associated MAC address found";
+		out.write("<tr><td>" + ip_address + "</td><td>" + error_msg + "</td></tr>");
+	}
+	
+	private static void print_single_ip_mac_success(JspWriter out, String ip_address, String mac_address) throws IOException{
+		out.write("<tr><td>");
+		print_single_input_attributes_ip(out, ip_address);
+		out.write("</td><td>");
+		print_single_input_attributes_mac(out, mac_address);
+		out.write("</td></tr>");
+	}
+	
+	private static void print_multiple_ip_mac_error(JspWriter out, String ip_address, int index) throws IOException{
+		String error_msg = "No associated MAC address found";
+		out.write("<tr><td>" + ip_address + "</td><td>" + error_msg + "</td><td>" 
+				+ "<input type='checkbox' name='choose_delete' value='" 
+				+ index +  "'></td></tr>");
+	}
+	
+	private static void print_multiple_ip_mac_success(JspWriter out, String ip_address, String mac_address, int index) throws IOException{
+		out.write("<tr><td>" + ip_address + "</td><td>" + mac_address + "</td><td>" 
+				+ "<input type='checkbox' name='choose_delete' value='" 
+				+ index +  "' checked></td></tr>");
+	}
+	
+	/** Helper Functions **/
+	private static void print_single_input_attributes_ip(JspWriter out, String ip_address) throws IOException{
+		out.write("<input type='text' name='IP_Address' readonly='readonly' value='" + ip_address+ "'/>");
+	}
+	
+	private static void print_single_input_attributes_mac(JspWriter out, String mac_address) throws IOException{
+		out.write("<input type='text' name='MAC_Address' readonly='readonly' value='" + mac_address+ "'/>");
+	}
+
+	public static boolean checkIPAddress(String ip_address){
+		final String IPADDRESS_PATTERN = 
+				"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+				"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+				"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+				"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+		return Pattern.matches(IPADDRESS_PATTERN, ip_address);		
+	}
+	
+	public static boolean checkMacAddress(String mac_address){
+		return Pattern.matches("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$", mac_address);
+	}
+	
+	/** END **/
+
 }

@@ -35,8 +35,7 @@ public class MultiMACAddressAdd extends TagSupport {
 	private String file_path;
 	private String serverid1="BDDS1";
 	private String serverid2="BDDS2";
-	private SimpleDateFormat format = new SimpleDateFormat(
-			"yyyy/MM/dd HH:mm:ss");
+	private SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	
 	private String title[] = { "MAC Address", "IP Address", "Machine Type",
 			"Location", "Owner", "Department", "Phone Number", "Reference",
@@ -85,17 +84,15 @@ public class MultiMACAddressAdd extends TagSupport {
 					log_Content = "";
 					data = Tools.readData(file_data[choose[i]]);
 					
-					// 刪除IP 
+					// 嚙磋嚙踝蕭IP 
 					APIEntity config7 = service.getIP4Address(id, data[1].trim());
 					if (config7!=null){
 					service.delete(config7.getId());
 					} 
 					
-					//刪除mac
+					//嚙磋嚙踝蕭mac
 					config7 = service.getMACAddress(id, data[0].trim());
 					if (config7!=null){
-						//要刪除mac相關的所有ip
-						//找出相關ip
 						APIEntity[] mac_ip_array=service.getLinkedEntities(config7.getId(),ObjectTypes.IP4Address,0,100);
 						String IP_addr=""; 
 						if (mac_ip_array.length>0){
@@ -113,7 +110,6 @@ public class MultiMACAddressAdd extends TagSupport {
 					service.delete(config7.getId());
 					}
 					
-					// 將mac address加入
 					EntityProperties props0 = new EntityProperties();
 					props0.addProperty(ObjectProperties.name, "hans");
 					String user_defined = "";
@@ -135,7 +131,7 @@ public class MultiMACAddressAdd extends TagSupport {
 					try {
 						long mac_long = service.addMACAddress(id, data[0].trim(),
 								props0.getPropertiesString());
-						// 加入ip
+						// 嚙稼嚙皚ip
 						long ip_ans = service.assignIP4Address(id, data[1].trim(),
 								data[0].trim(), "|", "MAKE_DHCP_RESERVED",
 								user_defined);
@@ -145,7 +141,7 @@ public class MultiMACAddressAdd extends TagSupport {
 						LogMian.writeLog(log_Content, userName);
 					} catch (Exception e) {
 						if (e.toString().equals("Duplicate of another item")) {
-							// 加入ip
+							// 嚙稼嚙皚ip
 							long ip_ans = service.assignIP4Address(id, data[1].trim(),
 									data[0].trim(), "|", "MAKE_DHCP_RESERVED",
 									user_defined);

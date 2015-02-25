@@ -37,8 +37,10 @@ public class OneMACAddressDelete extends TagSupport {
 		HttpServletResponse response = ServletActionContext.getResponse();
 		JspWriter out = this.pageContext.getOut();
 		Map session = ActionContext.getContext().getSession();
+		System.out.println(session.toString());
 		String select_config = (String) session.get("select_config");
 		String MAC_Address = (String) session.get("MAC_Address");
+		System.out.println("MAC_ADDRESS in one mac addr deletion is " + MAC_Address);
 		String select_servers = (String) session.get("select_servers");
 		session.remove("select_servers");
 		session.remove("MAC_Address");
@@ -51,10 +53,11 @@ public class OneMACAddressDelete extends TagSupport {
 			APIEntity config = service.getEntityByName(0, select_config,
 					ObjectTypes.Configuration);
 			long id = config.getId();
-			// §R°£MAC
+			
+			// MAC ADdress is null : ( !
 			APIEntity config7 = service.getMACAddress(id, MAC_Address);
 			
-			//§ä¥X¬ÛÃöip
+			//ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½ip
 			APIEntity[] mac_ip_array=service.getLinkedEntities(config7.getId(),ObjectTypes.IP4Address,0,100);
 			String IP_addr=""; 
 			if (mac_ip_array.length>0){
@@ -74,7 +77,7 @@ public class OneMACAddressDelete extends TagSupport {
 
 			config7 = service.getMACAddress(id, MAC_Address);
 			if (config7 != null) {
-				//¨q¸ÑªG				
+				//ï¿½qï¿½ï¿½ï¿½G				
 				out.write("<form name='form1' method='post'	action=''>");
 				out.write("<table cellspacing='0' width='200%' border='1' borderColor='#DEE6EE'>");
 				//harry

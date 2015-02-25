@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -18,6 +19,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.struts2.ServletActionContext;
 
 import tw.com.fivehundred.log.LogMian;
+import tw.com.fivehundred.tool.AddressType;
 import tw.com.fivehundred.tool.Tools;
 
 import com.bluecatnetworks.proteus.api.client.java.constants.ObjectTypes;
@@ -32,7 +34,7 @@ public class MultiAddress extends TagSupport {
 //	private String vauleName[] = { "MAC_Address", "IP_Address",
 //			"choose"};
 	private String read_error_message = "";
-
+	private String page_title = "Checking IP/MAC Addresses";
 	@Override
 	public int doStartTag() throws JspException {
 		ServletContext servletContext = ServletActionContext
@@ -46,7 +48,6 @@ public class MultiAddress extends TagSupport {
 		String[] file_data = readFile();
 		JspWriter out = this.pageContext.getOut();
 		String[] data = null;
-		APIEntity[] fields = null;
 		ProteusAPI_PortType service = (ProteusAPI_PortType) session
 				.get("ready_server");
 		request.setAttribute("select_config", select_config);
@@ -57,212 +58,36 @@ public class MultiAddress extends TagSupport {
 			config = service.getEntityByName(0, select_config,
 					ObjectTypes.Configuration);
 			id = config.getId();
-			// ����Configuration��������mac address
-			fields = Tools.getAllMacAddress(service, id);
+			// fields = Tools.getAllMacAddress(service, id);
 			String check_MACAddress = "";
 			boolean show_ip = true;
 			boolean show_mac = true;
-			
+			out.write("<h1>" + page_title +" </h1><br>");
 			out.write("<table><tr><td>Bluecat servers : BDDS1 & BDDS2");
-			/*
-			APIEntity[] servers;
-			servers = service.getEntities(id, ObjectTypes.Server, 0, 999);
-			out.write("<select name='select_servers'>");
-			for (int i = 0; i < servers.length; i++) {
-				out.write("<option vaule='" + servers[i].getName() + "'>"
-						+ servers[i].getName() + "</option>");
-			}
-			out.write("</select>");
-			*/
 			out.write("</td></tr></table>");
 			
 			// ip or mac
 			String ip_choice = (String)session.get("ip_choice");
-			
-			out.write("<table cellspacing='0' width='100%' border='1' borderColor='#DEE6EE'><tr>");
-			//for (int i = 0; i < title.length; i++) {
-				//out.write("<td align=left>" + title[i] + "</td>");
-				//out.write("<td align=left>" + file_data[0] + "</td>");
-			//}
-			if (ip_choice.equals("ip")){
-				out.write("<td align=left>IP Address</td>");
-				out.write("<td align=left>Associated MAC Address</td>");
-				out.write("<td align=left>Select to delete</td>");  
-			}else{
-				out.write("<td align=left>MAC Address</td>");
-				out.write("<td align=left>Associated IP Address</td>");
-				out.write("<td align=left>Select to delete</td>");  
-			}
-			out.write("</tr>");
-			int erro_number = 0;
-			if (file_data != null) {
-				if (file_data.length > 1) {
-					for (int i = 1; i < file_data.length; i++) {
-						data = Tools.readData(file_data[i]);
-						show_ip = true;
-						show_mac = true;
-						String message_mac = "";
-						String message_ip = "";
-						check_MACAddress = "";
-						boolean mac_repeat = false;
-						
-						if (ip_choice.equals("mac")){
-						// ���dMac
-						if (data[0].trim().length() > 0) {  
-							// ���dMac Address
-							String[] mac_array = data[0].trim().split("-");
-							if (mac_array.length == 1) {
-								mac_array = data[0].split(":");
-							}
-							if (mac_array.length == 1 && data[0].length() == 12) {
-								mac_array = new String[6];
-								for (int k = 0; k < mac_array.length; k++) {
-									mac_array[k] = "";
-								}
-								int a = 0;
-								for (int k = 0; k < data[0].length(); k++) {
-									if (k != 0 && k % 2 == 0) {
-										a++;
-									}
-									mac_array[a] = mac_array[a]
-											+ data[0].charAt(k);
-								}
-							}
-							if (mac_array.length != 6) {
-								message_mac = "Incorrect MAC Address: Please check MAC address format";
-								//show_ip = false;
-								//show_mac = false;
-							} else {
-								if (Tools.checkMacAddress(mac_array)) {
-									message_mac = "Incorrect MAC Address: Please check MAC address format";
-									//show_ip = false;
-									//show_mac = false;
-								} else {
-									check_MACAddress = checkMACAddress(fields,data[0].trim());
-									// �}�l�������X
-									if (check_MACAddress.equals("repeat")) {
-										//�n�A���X���p�oip
-										APIEntity config7 = service.getMACAddress(id, data[0].trim()); 
-										//���X����ip
-										APIEntity[] mac_ip_array=service.getLinkedEntities(config7.getId(),ObjectTypes.IP4Address,0,100);
-										if (mac_ip_array!=null && mac_ip_array.length>0){
-										String IP_addr = Tools.getIPbyADDRESSstring(mac_ip_array[0].getProperties()); 
-										data[1]=IP_addr;
-										}
-										message_mac = "Duplicated MAC Address";
-									}
-									if (check_MACAddress.equals("one")) {
-										//show_mac = false;
-										message_mac = "Record not found"; //"Unique MAC Address";
-										erro_number++;
-									}
-								}
-							}
-						} else {
-							message_mac = "Incorrect MAC Address: Please check MAC address format";
-							//show_ip = false;
-							//show_mac = false;
-						}
-						}
-						
-						if (ip_choice.equals("ip")){
-						// ���dip �������d data[1]���������ddata[0]
-						if (data[0].trim().length() > 0) {
-							String[] ip_marray = data[0].trim().split("\\.");
-							if (ip_marray.length != 4) {
-								message_ip = "Incorrect IP Address: Please check IP address format";
-								//show_ip = false;
-								//show_mac = false;
-							} else {
-								if (Tools.checkIPAddress(ip_marray)) {
-									message_ip = "Incorrect IP Address: Please check IP address format";
-									//show_ip = false;
-									//show_mac = false;
-								} else {
-									try {
-										config = service.getEntityByName(0,
-												select_config,
-												ObjectTypes.Configuration);
-										id = config.getId();
-										try {
-											APIEntity config_ip = service
-													.getIP4Address(id, data[0]);
-											if (config_ip != null) {
-												//show_ip = true;
-												//�n�A���X���p�omac 
-												String mac_addr= Tools.getMACbyMACADDRESSstring(config_ip.getProperties());
-												data[1] =mac_addr;
-												
-												message_ip = "Duplicated IP Address";
-											} else {
-												//show_ip = false;
-												message_ip = "Record not found"; //"IP address record not found";//"Free IP Address";
-												erro_number++;
-											}
-										} catch (RemoteException e2) {
-											message_ip = "IP Address Check Failure: Please check input IP address ";
-											//show_ip = false;
-											//show_mac = false;
-										}
-									} catch (RemoteException e1) {
-										e1.printStackTrace();
-									}
-								}
-							}
-						} else {
-							message_ip = "Incorrect IP Address: Please check IP address format";
-							//show_ip = false;
-							//show_mac = false;
-						}
-						}
-						
-						if (i % 2 == 0) {
-							out.write("<tr  style='background:#CDFEFF'>");
-						} else {
-							out.write("<tr  style='background:#FFFEFF'>");
-						}
-						for (int j = 0; j < 3; j++) {
-							if (j < 2) {
-								out.write("<td align=left>" + data[j]);
-								// 1=> 0 �����b���@�����F
-								if (j == 0 && message_ip.length() != 0) {
-									out.write("<br><FONT COLOR='#FF0000'>("
-											+ message_ip + ")</FONT>");
-								}
-								if (j == 0 && message_mac.length() != 0) {
-									out.write("<br><FONT COLOR='#FF0000'>("
-											+ message_mac + ")</FONT>");
-								}
-								out.write("</td>");
-							} else {
-								if (j == 2) {
-									if (show_mac || show_ip) {
-										out.write("<td>");
-										out.write("<input type='checkbox' name='choose_delete' value='"
-												+ i + "' checked='checked'>");
-										out.write("</td>");
-									} else {
-										out.write("<td>");
-										out.write("</td>");
-									}
-								}
-							}
-						}
-						out.write("</tr>");
-					}
-					System.out.println(erro_number+"|"+((file_data.length-1)*2));
-					if(erro_number!=((file_data.length-1)*2)){						
-						out.write("</table><input class=\"btn btn-default\" type='button' value='Delete' onclick=\"return checkalldel();\">");
-						out.write("</table><input class=\"btn btn-default\"  type='button' value='Back' onclick=\"top.location='/FiveHundredNet/BlueCat/DeletePage?choose=MultiMACAddress'\">");
-						
-					}else{
-						out.write("</table><input class=\"btn btn-default\"  type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=noData'\">");
-					}
-				} else {
-					out.write("</table><input class=\"btn btn-default\" type='submit' value='Back' onclick=\"form1.action='/FiveHundredNet/BlueCat/BackPage?choose=DeletePage&log=noData'\">");
+
+			// reading file
+			List<String> data_file = readCSVFile(file_path);
+			System.out.println("Printing data_file : " + data_file.toString());
+			if(data_file.size() != 0){
+				out.write("<table class=\"table table-striped table-hover table-bordered\">");
+	
+				if (ip_choice.equals("ip")){
+					print_table_header(out, "IP Address", "MAC Address", "Select To Delete");
+					Tools.multiple_deletion_check(out, service, config, AddressType.IP, data_file);
+				}else{
+					print_table_header(out, "MAC Address", "IP Address", "Select To Delete");
+					Tools.multiple_deletion_check(out, service, config, AddressType.MAC, data_file);
 				}
-				out.write("<input type='hidden' name='ip_choice' id='ip_choice' value='"+ip_choice+"' />");
+				out.write("</table>");
+				
+				out.write("</table><input class=\"btn btn-default\" type='button' value='Delete' onclick=\"return checkalldel();\">");
+				out.write("</table><input class=\"btn btn-default\"  type='button' value='Back' onclick=\"top.location='/FiveHundredNet/BlueCat/DeletePage?choose=MultiMACAddress'\">");
 			} else {
+				out.write("<h3>File is empty</h3>");
 				out.write("<tr><td>" + read_error_message + "</td></tr>");
 				String userName = (String) session.get("userName");
 				String log_Content = userName + "," + "" + "," + "" + ","
@@ -270,12 +95,14 @@ public class MultiAddress extends TagSupport {
 						+ Tools.getTime() + "," + "";
 				LogMian.writeLog(log_Content, userName);
 			}
+
 		} catch (IOException e) {
 			String userName = (String) session.get("userName");
 			String log_Content = userName + "," + "" + "," + "" + "," + ""
 					+ "," + "Bulk read system error" + "," + Tools.getTime()
 					+ "," + "";
 			LogMian.writeLog(log_Content, userName);
+			e.printStackTrace();
 			try {
 				out.write("Bulk read system error");
 			} catch (IOException e1) {
@@ -285,7 +112,11 @@ public class MultiAddress extends TagSupport {
 		}
 		return super.doStartTag();
 	}
-
+	
+	private static void print_table_header(JspWriter out, String h1, String h2, String h3) throws IOException{
+		out.write("<tr><th>" + h1 + "</th><th>" + h2 + "</th><th>" + h3 + "</th></tr>");
+	}
+	
 	private String[] readFile() {
 		BufferedReader dllRead = null;
 		ArrayList<String> fileData = new ArrayList<String>();
@@ -373,5 +204,42 @@ public class MultiAddress extends TagSupport {
 			}
 		}
 		return new_word;
+	}
+	
+	private List<String> readCSVFile(String file_path){
+		String csvFile = file_path;
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		List<String> data = new ArrayList<String>();
+	 
+		try {
+	 
+			br = new BufferedReader(new FileReader(csvFile));
+			line = br.readLine(); // read the header away
+			while ((line = br.readLine()) != null) {
+	 
+			        // use comma as separator
+				System.out.println("Reading line from CSV file : " + line); 
+				String[] country = line.split(cvsSplitBy);
+				System.out.println("ip/mac = " + country[0] );
+				data.add(country[0]);
+	 
+			}
+	 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return data;
 	}
 }

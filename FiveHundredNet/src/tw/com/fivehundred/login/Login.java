@@ -15,9 +15,13 @@ import javax.xml.ws.Response;
 import org.apache.struts2.ServletActionContext;
 
 import tw.com.fivehundred.log.LogMian;
+import tw.com.fivehundred.tool.Const;
 import tw.com.fivehundred.tool.Tools;
 
+import com.bluecatnetworks.proteus.api.client.java.EntityProperties;
 import com.bluecatnetworks.proteus.api.client.java.ProteusAPIUtils;
+import com.bluecatnetworks.proteus.api.client.java.constants.ObjectTypes;
+import com.bluecatnetworks.proteus.api.client.java.proxy.APIEntity;
 import com.bluecatnetworks.proteus.api.client.java.proxy.ProteusAPI_PortType;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -63,8 +67,11 @@ public class Login extends ActionSupport {
 							.trim());
 					HttpServletRequest resqust = ServletActionContext
 							.getRequest();
-					
-					
+					System.out.println(service.getEntityByName(0,Const.CONFIG_NAME,ObjectTypes.Configuration));
+					APIEntity existingConfiguration = service.getEntityByName(0,Const.CONFIG_NAME,ObjectTypes.Configuration);
+					APIEntity existingView = service.getEntityByName(
+							existingConfiguration.getId(), "Existing View", ObjectTypes.View ); 
+					System.out.println(existingConfiguration.getName());
 					
 					resqust.setAttribute("ContentPage",
 							"/WEB-INF/Menu/HomeMenu.jsp");
@@ -100,9 +107,7 @@ public class Login extends ActionSupport {
 			requst.setAttribute("erroMessage", message);
 			return "Login";
 		}
-//		 HttpServletRequest resqust = ServletActionContext.getRequest();
-//		 resqust.setAttribute("whichPage", "/WEB-INF/Menu/HomeMenu.jsp");
-//		 return "success";
+
 	}
 
 	public String getUserName() {

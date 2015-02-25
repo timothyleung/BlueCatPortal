@@ -17,6 +17,7 @@ import com.bluecatnetworks.proteus.api.client.java.proxy.ProteusAPI_PortType;
 import com.opensymphony.xwork2.ActionContext;
 
 import tw.com.fivehundred.add.been.OneMacAddress;
+import tw.com.fivehundred.tool.Const;
 import tw.com.fivehundred.tool.Tools;
 
 public class OneMACAddress extends TagSupport {
@@ -46,13 +47,13 @@ public class OneMACAddress extends TagSupport {
 		Map session = ActionContext.getContext().getSession();
 		ProteusAPI_PortType service = (ProteusAPI_PortType) session
 				.get("ready_server");
+
 		String select_config = (String) session.get("select_config");
 		//harry
-		select_config="hkbu";
-		if (select_config=="" || select_config==null){
-			select_config="hkbu";//"BDDS1"; bdds1������ 
-		}
+
+		select_config=Const.CONFIG_NAME;
 		session.remove("select_config");
+
 		OneMacAddress oneMacAddress = (OneMacAddress) session.get("one_data");
 		session.remove("one_data");
 		try {

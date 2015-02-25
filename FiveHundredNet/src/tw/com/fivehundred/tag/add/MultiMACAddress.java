@@ -73,6 +73,7 @@ public class MultiMACAddress extends TagSupport {
 
 		try {
 			try {
+				System.out.println("Getting config : " + select_config);
 				config = service.getEntityByName(0, select_config,
 						ObjectTypes.Configuration);
 				id = config.getId();
