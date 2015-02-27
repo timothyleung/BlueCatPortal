@@ -39,7 +39,9 @@ public class OneMACAddressAdd extends TagSupport {
 		JspWriter out = this.pageContext.getOut();
 		Map session = ActionContext.getContext().getSession();
 		OneMacAddress oneMacAddress = (OneMacAddress) session.get("one_data");
+		System.out.println("Printing oneMacAddress in onemacaddress add : " + oneMacAddress.toString());
 		String select_config = "hkbu";// (String) session.get("select_config");
+		System.out.println("Printing sessions in onemacaddress add : " +session.toString());
 		session.remove("one_data");
 		session.remove("select_config");
 		ProteusAPI_PortType service = (ProteusAPI_PortType) session
@@ -53,44 +55,30 @@ public class OneMACAddressAdd extends TagSupport {
 
 			String DuplicatedIP = "";
 			String overwrite = (String) session.get("overwrite");
+			System.out.println("Overwrite value is : " + overwrite);
 			if (overwrite==null){
 				overwrite="";
 			}
 			if (overwrite.equals("1")) {
-				try {
-					APIEntity config_mac = service.getMACAddress(id, oneMacAddress.getMAC_Address());
-					APIEntity[] mac_ip_array = service.getLinkedEntities( config_mac.getId(), ObjectTypes.IP4Address, 0, 100);
-
-					if (mac_ip_array.length > 0) {
-						for (int x = 0; x < mac_ip_array.length; x++) {
-							DuplicatedIP = Tools.getIPbyADDRESSstring(mac_ip_array[x].getProperties());
-							APIEntity configtmp = service.getIP4Address(id,DuplicatedIP);
-							if (configtmp != null) {
-								service.delete(configtmp.getId());
-							}
-						}
-					}
-					//�Rmac
-					service.delete(config_mac.getId()); 
-					
-				} catch (Exception ex) {
-
-				}
-				try { 
-					APIEntity config_ip = service.getIP4Address(id,oneMacAddress.getIP_Address());
-					if (config_ip != null) { 
-						service.delete(config_ip.getId()); 
-					}
-					APIEntity config_mac = service.getMACAddress(id, oneMacAddress.getMAC_Address());
-					if (config_mac != null) {
-						service.delete(config_mac.getId()); 
-					}
- 
-				} catch (Exception ex) {
-
-				}
 				
+				try {
+					String mac_address = oneMacAddress.getMAC_Address();
+					String ip_address = oneMacAddress.getIP_Address();
+					if (Tools.mac_in_system(service, config, mac_address)){
+						System.out.println("Removing mac and corresponding ip from the system : " + mac_address);
+						Tools.remove_mac_from_system(service, config, mac_address);
+					}
+					
+					if(Tools.ip_in_system(service, config, ip_address)){
+						System.out.println("Removing ip and corresponding mac from the system : " + ip_address);
+						Tools.remove_ip_from_system(service, config, ip_address);
+					}
+				} catch (Exception ex) {
+
+				}
 			}
+			
+			// add to the System! 
 
 			String user_defined = "";
 			if (oneMacAddress.getMachine_Type() != null) {
@@ -223,15 +211,7 @@ public class OneMACAddressAdd extends TagSupport {
 					+ "," + "Single MAC address import system error" + ","
 					+ Tools.getTime() + "," + "";
 			LogMian.writeLog(log_Content, userName);
-			
-			/*
-			try {
-				out.write("<FONT COLOR='#FF0000'>"
-						+ "Single MAC address import system error" + "</FONT>");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+
 		}
 
 		return super.doStartTag();

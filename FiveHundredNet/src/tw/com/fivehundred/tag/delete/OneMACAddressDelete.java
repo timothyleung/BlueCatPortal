@@ -54,10 +54,8 @@ public class OneMACAddressDelete extends TagSupport {
 					ObjectTypes.Configuration);
 			long id = config.getId();
 			
-			// MAC ADdress is null : ( !
 			APIEntity config7 = service.getMACAddress(id, MAC_Address);
 			
-			//���X����ip
 			APIEntity[] mac_ip_array=service.getLinkedEntities(config7.getId(),ObjectTypes.IP4Address,0,100);
 			String IP_addr=""; 
 			if (mac_ip_array.length>0){

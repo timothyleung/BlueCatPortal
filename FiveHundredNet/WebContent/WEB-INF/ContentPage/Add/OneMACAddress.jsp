@@ -11,7 +11,7 @@
 			</tr>
 		</table>
 	</div>
-	<table cellspacing="0" width="200%" border="1" borderColor='#DEE6EE'>
+	<table class="table table-striped table-hover table-bordered">
 		<hans:OneMACAddress />
 	</table>
 	<input class="btn btn-default"type="submit" value="Check" >

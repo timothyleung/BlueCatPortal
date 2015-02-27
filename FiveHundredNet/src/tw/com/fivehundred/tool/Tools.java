@@ -19,6 +19,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import tw.com.fivehundred.add.been.OneMacAddress;
 import tw.com.fivehundred.log.LogMian;
 
 import com.bluecatnetworks.proteus.api.client.java.constants.ObjectTypes;
@@ -35,7 +36,6 @@ public class Tools {
 	    response.addCookie(cookie);
 	}
 	
-//	public static Cookie getCookieByName(HttpServletRequest request,String name){
 	public static String getCookieByName(HttpServletRequest request,String name){
 	    Map<String,Cookie> cookieMap = ReadCookieMap(request);
 	    if(cookieMap.containsKey(name)){
@@ -151,6 +151,9 @@ public class Tools {
 		APIEntity[] ans = null;
 		try {
 			ans =  service.getEntities(id,ObjectTypes.Server,0,999);
+			for (APIEntity s : ans){
+				System.out.println("Printing server in getALLServers : " + s.getName() + " "  + s.getProperties() + " " + s.getType() + " " );
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -165,8 +168,6 @@ public class Tools {
 		APIEntity[] Blocks;
 		try {
 			Blocks = service.getEntities(id, ObjectTypes.IP4Block, 0, 9999); //IP4Block IP4Network
-			
-			//APIEntity[] fields2 = service.getEntities(id, ObjectTypes.IP4Network, 0, 9999);
 			
 			APIEntity[] fields1 = null;
 			String block_cidr = "";
@@ -306,10 +307,25 @@ public class Tools {
 		return data;
 	}
 	
+	/**
+	 * get ipnetwork by cidr string? : CIDR=158.182.251.0/24|allowDuplicateHost=disable|inheritAllowDuplicateHost=true|pingBeforeAssign=disable|inheritPingBeforeAssign=true|gateway=158.182.251.2|inheritDefaultDomains=true|inheritDefaultView=true|inheritDNSRestrictions=true|
+		return this cidr string : 158.182.251.0/24
+		get ipnetwork by cidr string? : CIDR=158.182.252.0/24|allowDuplicateHost=disable|inheritAllowDuplicateHost=true|pingBeforeAssign=disable|inheritPingBeforeAssign=true|gateway=158.182.252.2|inheritDefaultDomains=true|inheritDefaultView=true|inheritDNSRestrictions=true|
+		return this cidr string : 158.182.252.0/24
+		get ipnetwork by cidr string? : CIDR=158.182.253.0/25|allowDuplicateHost=disable|inheritAllowDuplicateHost=true|pingBeforeAssign=disable|inheritPingBeforeAssign=true|gateway=158.182.253.2|inheritDefaultDomains=true|inheritDefaultView=true|inheritDNSRestrictions=true|
+		return this cidr string : 158.182.253.0/25
+		get ipnetwork by cidr string? : CIDR=158.182.253.128/26|allowDuplicateHost=disable|inheritAllowDuplicateHost=true|pingBeforeAssign=disable|inheritPingBeforeAssign=true|gateway=158.182.253.130|inheritDefaultDomains=true|inheritDefaultView=true|inheritDNSRestrictions=true|
+		return this cidr string : 158.182.253.128/26
+		get ipnetwork by cidr string? : CIDR=158.182.253.192/26|allowDuplicateHost=disable|inheritAllowDuplicateHost=true|pingBeforeAssign=disable|inheritPingBeforeAssign=true|gateway=158.182.253.194|inheritDefaultDomains=true|inheritDefaultView=true|inheritDNSRestrictions=true|
+		r
+	 */
 	public static String getIPNETWORKbyCIDRstring(String CIDRstring) {
+		System.out.println("get ipnetwork by cidr string? : " + CIDRstring);
 		String rtnvalue= CIDRstring.substring(
 				CIDRstring.indexOf("CIDR=") + 5,
 				CIDRstring.indexOf( "|", CIDRstring.indexOf("CIDR=")));
+		System.out.println("return this cidr string : " + rtnvalue);
+
 		return rtnvalue;
 	}
 	public static String getIPNETWORKwithoutSub(String withnamestring){
@@ -317,7 +333,12 @@ public class Tools {
 		return Network[0];
 	}
 	public static String getIPNETWORKwithoutName(String withnamestring){
+		// sometime ip address nework : 158.182.1.0/24 [net1]
+		// sometime ip address nework : 158.182.1.0/24 
+		System.out.println("ip address nework : " + withnamestring);
 		String[] Network = withnamestring.trim().split(" ");
+		System.out.println("getIPNETWORKwithoutName newrok[0] : "  + Network[0]);
+		// getIPNETWORKwithoutName newrok[0] : 101.78.134.0/24
 		return Network[0];
 	}
 	public static String getIPbyADDRESSstring(String ADDRESSstring) {
@@ -369,6 +390,159 @@ public class Tools {
 	 */
 
 	/**
+	 * Remove mac and associated ip from the system 
+	 * @param service
+	 * @param entity
+	 * @param mac_address
+	 * @return
+	 * @throws RemoteException
+	 */
+	public static boolean remove_mac_from_system(ProteusAPI_PortType service, APIEntity entity, String mac_address) throws RemoteException {
+		long id = entity.getId();
+		APIEntity config_mac = service.getMACAddress(id, mac_address);
+		assert(config_mac != null) : "Config mac shouldnt be null";
+		APIEntity[] mac_ip_array = service.getLinkedEntities( config_mac.getId(), ObjectTypes.IP4Address, 0, 100);
+		if (mac_ip_array.length > 0) {
+			for (int x = 0; x < mac_ip_array.length; x++) {
+				
+				String DuplicatedIP = Tools.getIPbyADDRESSstring(mac_ip_array[x].getProperties());
+				System.out.println("Printing ip stick to mac : " + DuplicatedIP + " " + mac_address);
+				APIEntity configtmp = service.getIP4Address(id,DuplicatedIP);
+				if (configtmp != null) {
+					service.delete(configtmp.getId());
+				}
+			}
+		}
+		service.delete(config_mac.getId()); 
+		return true;
+	}
+	
+	public static boolean remove_ip_from_system(ProteusAPI_PortType service, APIEntity entity, String ip_address) throws RemoteException{
+		long id = entity.getId();
+		String mac_address = find_mac_by_ip(service, entity, ip_address);
+		APIEntity config_mac = service.getMACAddress(id, mac_address);
+		System.out.println("Remove ip from system, removing mac sticking to this ip : " + ip_address + " " + mac_address);
+		service.delete(config_mac.getId()); 
+		APIEntity config_ip = service.getIP4Address(id,ip_address);
+		service.delete(config_ip.getId());
+		return true;
+	}
+	/**
+	 * Assume mac in system already!
+	 * @param service
+	 * @param entity
+	 * @param mac_address
+	 * @return
+	 * @throws RemoteException
+	 */
+	public static boolean mac_in_system(ProteusAPI_PortType service, APIEntity entity, String mac_address) throws RemoteException{
+		long id = entity.getId();
+		APIEntity config_mac = service.getMACAddress(id, mac_address);
+		if (config_mac == null){
+			return false;
+		}
+		APIEntity[] mac_ip_array=service.getLinkedEntities(config_mac.getId(),ObjectTypes.IP4Address,0,10);
+
+		return mac_ip_array.length != 0;
+	}
+	
+	/**
+	 * Assume mac in system already! 
+	 * @param service
+	 * @param entity
+	 * @param mac_address
+	 * @return
+	 * @throws RemoteException
+	 */
+	public static String find_ip_by_mac(ProteusAPI_PortType service, APIEntity entity, String mac_address) throws RemoteException{
+		long id = entity.getId();
+		APIEntity config_mac = service.getMACAddress(id, mac_address);
+		APIEntity[] mac_ip_array=service.getLinkedEntities(config_mac.getId(),ObjectTypes.IP4Address,0,10);
+		return Tools.getIPbyADDRESSstring(mac_ip_array[0].getProperties()) ;
+	}
+	/**
+	 * Assume ip_address is in correct format!
+	 * @param entity config entity
+	 * @param ip_address
+	 * @return
+	 * @throws RemoteException 
+	 */
+	public static boolean ip_in_system(ProteusAPI_PortType service, APIEntity entity, String ip_address) throws RemoteException{
+		long id = entity.getId();
+		APIEntity config_ip = service.getIP4Address(id, ip_address);
+		return config_ip != null;
+	}
+	
+	public static String find_mac_by_ip(ProteusAPI_PortType service, APIEntity entity, String ip_address) throws RemoteException{
+		long id = entity.getId();
+		APIEntity config_ip = service.getIP4Address(id, ip_address);
+		return Tools.getMACbyMACADDRESSstring(config_ip.getProperties()); 
+	}
+	/**
+	 * 
+	 * @param out write out html through here
+	 * @param service sessions.get ready_server
+	 * @param entity config entity 
+	 * @param type either IP or NETWORK_IP
+	 * @param oneMacAddress the structure that stored all the info, assume ip/mac is valid, but have to take care of network_ip
+	 * @param index indicate it is bulk or single
+	 * @return for multiple
+	 * @throws IOException 
+	 */
+	public static boolean single_addition_check(JspWriter out, ProteusAPI_PortType service, APIEntity entity, AddressType type, OneMacAddress oneMacAddress, int index) throws IOException {
+		assert(type == AddressType.IPV4_NETWORK || type == AddressType.IP) : "INVALID ADDRESSTYPE";
+		String ip_address, mac_address, ip_msg="", mac_msg="";
+		String associate_mac_address="";
+		String associate_ip_address="";
+		boolean overwrite_check = false;
+		if (type == AddressType.IPV4_NETWORK) {
+			APIEntity[] available_ip_entities = service.searchByObjectTypes(
+							Tools.getIPNETWORKwithoutName(oneMacAddress.getIP_Address_NetWork()),
+							ObjectTypes.IP4Network, 0, 10); // should only return 1 elem, coz we using exact search 10.1.1.0/24
+			assert (available_ip_entities.length != 0) : "No available ip returned";
+			APIEntity ipv4_entity = available_ip_entities[0];
+			String ip4Network = Tools.getIPNETWORKbyCIDRstring(ipv4_entity.getProperties()); // return 10.0.1.0/24
+			String available_ip =service.getNextAvailableIP4Address(ipv4_entity.getId());
+			oneMacAddress.setIP_Address(available_ip);
+			ip_msg = "IP Assigned By System";
+
+		} else if ( type == AddressType.IP) {
+			ip_address = oneMacAddress.getIP_Address();
+			if(ip_in_system(service, entity, ip_address)){
+				// find associated mac, must be true
+				associate_mac_address = find_mac_by_ip(service, entity, ip_address);
+				System.out.println("Associate mac address exists! : " + associate_mac_address);
+				ip_msg = "Associate mac address exists! : " + associate_mac_address;
+				overwrite_check = true;
+				// need to rmb this
+			} else {
+				// not in system : )
+			}
+		}
+		
+		mac_address = oneMacAddress.getMAC_Address(); // assume mac_address is in correct format
+		if(mac_in_system(service, entity, mac_address)){
+			associate_ip_address = find_ip_by_mac(service, entity, mac_address);
+			System.out.println("Associate ip address exists! : " + associate_ip_address);
+			mac_msg = "Associate ip address exists! : " + associate_ip_address;
+			overwrite_check = true;
+			// need to rmb this
+		} else {
+			// happy
+		}
+		
+		// print out everything
+		if (index == 0) {
+			// single printing
+			print_import_single_ip_mac_row(out, oneMacAddress, ip_msg, mac_msg);
+			print_import_single_udf_row(out, oneMacAddress);
+			
+		} else {
+			// multiple printing
+		}
+		return overwrite_check;
+	}
+	/**
 	 * 
 	 * @param out
 	 * @param entity config entity
@@ -402,7 +576,6 @@ public class Tools {
 					} else {
 						APIEntity[] config_mac_array=service.getLinkedEntities(new_entity.getId(),ObjectTypes.IP4Address,0,100);
 						single_deletion_check(out,config_mac_array[0], AddressType.MAC, mac_or_ip, i+1);
-	
 					}
 				} else {
 					// print invalid mac format 
@@ -488,6 +661,49 @@ public class Tools {
 		}
 	}
 
+	/* For import */
+	private static void print_import_single_ip_mac_row(JspWriter out, OneMacAddress oneMacAddress, String ip_msg, String mac_msg) throws IOException{
+		print_import_single_ip_mac_row_wrapper(out, ImportAttr.MAC_ADDR.getIndex(), oneMacAddress.getMAC_Address(), mac_msg);
+		print_import_single_ip_mac_row_wrapper(out, ImportAttr.IP_ADDR.getIndex(), oneMacAddress.getIP_Address(), ip_msg);
+	}
+	
+	private static void print_import_single_ip_mac_row_wrapper(JspWriter out, int type, String ip_or_mac, String msg) throws IOException{
+		if (!msg.isEmpty()){
+			// print row with special treatment
+			out.write("<tr class=\"warning\"><th>" + Const.IMPORT_TITLE[type] + "</th>" 
+				+"<td><input type='text' name='oneMacAddress."
+				+ Const.IMPORT_VALUE_NAME[type]
+				+ "' readonly='readonly' value='"
+				+ ip_or_mac + "'/>" + "<br>(" + msg +")</td></tr>");
+			
+		} else {
+			print_row_wrapper(out, type, ip_or_mac);
+		}
+		
+	}
+	private static void print_import_single_udf_row(JspWriter out, OneMacAddress oneMacAddress) throws IOException{
+		print_row_wrapper(out, ImportAttr.MACHINE_TYPE.getIndex(), oneMacAddress.getMachine_Type());
+		print_row_wrapper(out, ImportAttr.LOCATION.getIndex(), oneMacAddress.getLocation());
+		print_row_wrapper(out, ImportAttr.OWNER.getIndex(), oneMacAddress.getOwner());
+		print_row_wrapper(out, ImportAttr.DEPT.getIndex(), oneMacAddress.getDepartment());
+		print_row_wrapper(out, ImportAttr.PHONE_NUM.getIndex(), oneMacAddress.getPhone_Number());
+		print_row_wrapper(out, ImportAttr.INPUT_DATE.getIndex(), oneMacAddress.getInput_Date());
+		print_row_wrapper(out, ImportAttr.REF.getIndex(), oneMacAddress.getReference());
+	}
+	
+	private static void print_row_wrapper(JspWriter out, int index, String value) throws IOException{
+
+		print_row(out, new String[]{Const.IMPORT_TITLE[index], Const.IMPORT_VALUE_NAME[index], value});
+	}
+	
+	private static void print_row(JspWriter out, String[] list) throws IOException{
+		out.write("<tr>");
+		out.write("<th>" + list[0] + "</th>");
+		out.write("<th><input type='text' name='oneMacAddress." + list[1]
+							+ "' readonly='readonly' value='" + list[2] + "'/></th>");
+		out.write("</tr>");
+	}
+	/* For deletion */
 	private static void print_single_mac_ip_error(JspWriter out, String mac_address) throws IOException {
 		String error_msg = "No associated IP address found";
 		out.write("<tr><td>" + mac_address + "</td><td>" + error_msg + "</td></tr>");

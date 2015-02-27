@@ -62,16 +62,10 @@ public class MultiMACAddressChoice extends TagSupport {
 		long id = 0;
 
 		try {
-			
-			
-			 
 			try {
 				config = service.getEntityByName(0, select_config,
 						ObjectTypes.Configuration);
 				id = config.getId();
-				//harry���g�S�b���F
-				// ����Configuration��������mac address
-				//fields = Tools.getAllMacAddress(service, id);
 			} catch (RemoteException e1) {
 				out.write("Please check error message");
 			}
@@ -79,8 +73,8 @@ public class MultiMACAddressChoice extends TagSupport {
 			String ip4Network = "";
 			out.write("<h1>" + page_title +"</h1><br>");
 
-			out.write("<table cellspacing='0' width='100%' border='1' borderColor='#DEE6EE'>");
-			out.write("<tr><th align=left><input type='radio' name='ip_choice' value='1' checked onclick='showip3()'>IP Address<input type='radio' name='ip_choice' value='2' onclick='showip4()'>IP Address NetWork</th><td>");
+			out.write("<table class=\"table table-striped table-hover table-bordered\">");
+			out.write("<tr><th><input type='radio' name='ip_choice' value='1' checked onclick='showip3()'>IP Address<input type='radio' name='ip_choice' value='2' onclick='showip4()'>IP Address NetWork</th><td>");
 			out.write("<select name='MultiMacAddress.IP_Address_NetWork' id='MultiMacAddress.IP_Address_NetWork' style='display:none'>");
 			out.write("<option vaule=''>Please select </option>");
 			for (int j = 0; j < IPNETWORKfields.length; j++) {
@@ -99,8 +93,7 @@ public class MultiMACAddressChoice extends TagSupport {
 			out.write("</select>");
 			out.write("</td></tr>");
 			out.write("</table>");
-			
-			 
+
 		} catch (IOException e) {
 			String userName = (String) session.get("userName");
 			String log_Content = userName + "," + "" + "," + "" + ","
@@ -151,58 +144,5 @@ public class MultiMACAddressChoice extends TagSupport {
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	private String checkMACAddress(APIEntity[] fields, String mac_address) {
-		String ans = "one";
-		String container = "";
-		for (int i = 0; i < fields.length; i++) {
-			if (fields[i].getProperties().indexOf("address") != -1) {
-				container = fields[i]
-						.getProperties()
-						.substring(
-								fields[i].getProperties().indexOf("address=") + 8,
-								fields[i].getProperties().indexOf("address=") + 25)
-						.replace("-", "");
-				if (changUpper(mac_address).equals(container)) {
-					ans = "repeat";
-					break;
-				}
-			}
-		}
-		return ans;
-	}
-
-	private String changUpper(String old) {
-		String new_word = "";
-		for (int i = 0; i < old.length(); i++) {
-			if (!Character.isDigit(old.charAt(i))) {
-				switch (old.charAt(i)) {
-				case 'a':
-					new_word = new_word + "A";
-					break;
-				case 'b':
-					new_word = new_word + "B";
-					break;
-				case 'c':
-					new_word = new_word + "C";
-					break;
-				case 'd':
-					new_word = new_word + "D";
-					break;
-				case 'e':
-					new_word = new_word + "E";
-					break;
-				case 'f':
-					new_word = new_word + "F";
-					break;
-				default:
-					break;
-				}
-			} else {
-				new_word = new_word + old.charAt(i);
-			}
-		}
-		return new_word;
 	}
 }

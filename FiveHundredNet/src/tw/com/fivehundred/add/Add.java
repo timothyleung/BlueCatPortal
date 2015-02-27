@@ -36,6 +36,7 @@ public class Add extends ActionSupport {
 	private String erroMessage;
 	@SuppressWarnings("unchecked")
 	public String execute() {
+		System.out.println("IN add/Add.java");
 		boolean jump_login = true;
 		ServletContext servletContext = ServletActionContext
 				.getServletContext();
@@ -73,6 +74,7 @@ public class Add extends ActionSupport {
 					session.remove("old_data");
 					session.put("one_data", oneMacAddress1);
 				}else{
+					System.out.println("Add.java storing oneMacAddress tp one_data, onemacaddress os : " + oneMacAddress.toString());
 					session.put("one_data", oneMacAddress);
 				}
 				requst.setAttribute("ContentPage",
@@ -103,6 +105,7 @@ public class Add extends ActionSupport {
 				session.put("overwrite", overwrite);
 				session.put("select_config", select_config);
 				if (jump.equals("one")) {
+					// send an empty oneMacAddress structure. 
 					session.put("one_data", oneMacAddress);
 					requst.setAttribute("ContentPage",
 							"/WEB-INF/ContentPage/Add/OneMACAddressCheck.jsp");
@@ -112,12 +115,18 @@ public class Add extends ActionSupport {
 				}
 				//harry check and rewrite 
 				if (jump.equals("oneAdd")) {
+					System.out.println("Session in add.java : " + session.toString());
 					session.put("select_config", "hkbu"); //BDDS1
+					session.put("overwrite", "1");
 					OneMacAddress oneMacAddress1=(OneMacAddress) session.get("old_data");
 					if(oneMacAddress1!=null){	
+						System.out.println("OLD DATA ? Add.java jump euqlas oneAdd print oneMacAddress : " +  oneMacAddress1.toString());
+
 						session.remove("old_data");
 						session.put("one_data", oneMacAddress1);
 					}else{
+						System.out.println("NEW DATA (EMPTY) Add.java jump euqlas oneAdd print oneMacAddress : " +  oneMacAddress.toString());
+
 						session.put("one_data", oneMacAddress);
 					}
 					requst.setAttribute("ContentPage",

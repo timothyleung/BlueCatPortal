@@ -37,9 +37,7 @@ public class MultiMACAddress extends TagSupport {
 	private String title[] = { "MAC Address", "IP Address", "Machine Type",
 			"Location", "Owner", "Department", "Phone Number", "Reference",
 			"Input Date","Overwrite" };
-	private String vauleName[] = { "MAC_Address", "IP_Address", "Machine_Type",
-			"Location", "Owner", "Department", "Phone_Number", "Reference",
-			"Input_Date", "choose_data" };
+
 	private String read_error_message = "";
 	final String page_title = "Multiple IP/MAC addresses Check";
 
@@ -72,12 +70,18 @@ public class MultiMACAddress extends TagSupport {
 		String OldDyIP="";
 
 		try {
-			try {
+			/**
+			 * Tim implementation
+			 */
+			
+			// display page only.. 
+			
+			
+			try {	
 				System.out.println("Getting config : " + select_config);
 				config = service.getEntityByName(0, select_config,
 						ObjectTypes.Configuration);
 				id = config.getId();
-				// ����Configuration��������mac address //�C
 				fields = Tools.getAllMacAddress(service, id);
 			} catch (RemoteException e1) {
 				out.write("Please check error message");

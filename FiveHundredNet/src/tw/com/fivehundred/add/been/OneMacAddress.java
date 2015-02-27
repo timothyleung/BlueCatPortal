@@ -13,6 +13,15 @@ public class OneMacAddress {
 	String IP_Address_NetWork;
 	String Servers;
 
+	@Override
+	public String toString(){
+		return this.getDepartment() + " " + this.getInput_Date() + " " 
+				+ this.getIP_Address() + " " + this.getIP_Address_NetWork() + " " +this.getLocation() + " "
+				+ this.getMAC_Address() + " " + this.getMachine_Type() + " " + this.getOwner() + 
+				" " + this.getPhone_Number() + " " + this.getReference() + " " + this.getServers() ;
+		
+	}
+	
 	public String getMAC_Address() {
 		return MAC_Address;
 	}
@@ -30,6 +39,7 @@ public class OneMacAddress {
 	}
 
 	public void setIP_Address(String iP_Address) {
+		// assume the ip address is in correct format.... 
 		if (iP_Address.equals("xxx.xxx.xxx.xxx")) {
 			IP_Address = "";
 		} else {
@@ -93,7 +103,9 @@ public class OneMacAddress {
 		Reference = reference.trim();
 	}
 
+	// return Getting ip_ADDRESS_NETWORK from oneMacAddress : 192.168.252.0/25 [1st - net252]
 	public String getIP_Address_NetWork() {
+		System.out.println("Getting ip_ADDRESS_NETWORK from oneMacAddress : " + IP_Address_NetWork);
 		return IP_Address_NetWork;
 	}
 
