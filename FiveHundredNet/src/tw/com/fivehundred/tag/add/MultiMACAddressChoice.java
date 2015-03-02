@@ -79,8 +79,6 @@ public class MultiMACAddressChoice extends TagSupport {
 			out.write("<option vaule=''>Please select </option>");
 			for (int j = 0; j < IPNETWORKfields.length; j++) {
 				ip4Network = Tools.getIPNETWORKbyCIDRstring(IPNETWORKfields[j].getProperties());
-				
-				//if (ip4Network.split("/")[0].split("\\.")[3].equals("0")) {
 					if (IPNETWORKfields[j].getName()!=null){
 						out.write("<option vaule='" + ip4Network + "'>"
 								+ ip4Network + "  ["+IPNETWORKfields[j].getName() + "]</option>");
@@ -88,61 +86,15 @@ public class MultiMACAddressChoice extends TagSupport {
 						out.write("<option vaule='" + ip4Network + "'>"
 								+ ip4Network + " </option>");
 					}
-				//}
 			}
 			out.write("</select>");
 			out.write("</td></tr>");
 			out.write("</table>");
 
 		} catch (IOException e) {
-			String userName = (String) session.get("userName");
-			String log_Content = userName + "," + "" + "," + "" + ","
-					+ "Bulk MAC Address" + "," + "Bulk read system error" + ","
-					+ Tools.getTime() + "," + "";
-			LogMian.writeLog(log_Content, userName);
-			try {
-				out.write("Bulk read system error");
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 		return super.doStartTag();
 	}
 
-	private String[] readFile() {
-		BufferedReader dllRead = null;
-		ArrayList<String> fileData = new ArrayList<String>();
-		String aa = "";
-		try {
-			dllRead = new BufferedReader(new FileReader(new File(file_path)));
-			try {
-				while ((aa = dllRead.readLine()) != null) {
-					fileData.add(aa);
-				}
-			} catch (IOException e) {
-				read_error_message = read_error_message
-						+ "File read failure<br>";
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
-			read_error_message = read_error_message + "File not find<br>";
-			e.printStackTrace();
-		} finally {
-			try {
-				dllRead.close();
-			} catch (IOException e) {
-				read_error_message = read_error_message
-						+ "File close failure<br>";
-				e.printStackTrace();
-			}
-		}
-		try {
-			String[] data = new String[fileData.size()];
-			data = fileData.toArray(data);
-			return data;
-		} catch (Exception e) {
-			return null;
-		}
-	}
 }

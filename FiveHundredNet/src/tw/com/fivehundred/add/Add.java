@@ -32,7 +32,7 @@ public class Add extends ActionSupport {
 	private File fileData;
 	private String fileDataFileName;
 	private String fileDataContentType;
-	private String choose_data, select_config,select_servers;
+	private String choose_data, select_config,select_servers, ip_rows_data;
 	private String erroMessage;
 	@SuppressWarnings("unchecked")
 	public String execute() {
@@ -54,12 +54,15 @@ public class Add extends ActionSupport {
 			requst.setAttribute("delete", "");
 			requst.setAttribute("history", "");
 			requst.setAttribute("seach", "");
+			System.out.println("1");
+			
 			String choose = requst.getParameter("choose");
 			String ip_choice = (requst.getParameter("ip_choice")!=null)?requst.getParameter("ip_choice"):""; 
 			String ip_choice_network=requst.getParameter("MultiMacAddress.IP_Address_NetWork");
 			session.put("ip_choice", ip_choice);
 			session.put("ip_choice_network", ip_choice_network);
-			
+			System.out.println("2 + ip_choice_network = " + ip_choice_network);
+
 			if (choose.equals("AddData")) {
 				requst.setAttribute("ContentPage",
 						"/WEB-INF/ContentPage/Add/OneMACAddressChoose.jsp");
@@ -98,6 +101,8 @@ public class Add extends ActionSupport {
 				jump_login = false;
 			}
 			if (choose.equals("check")) {
+				System.out.println("3 in check");
+
 				String jump = requst.getParameter("jump");
 				//harry
 				String overwrite = requst.getParameter("overwrite"); 
@@ -136,8 +141,17 @@ public class Add extends ActionSupport {
 					jump_login = false;
 				}
 				if (jump.equals("multi")) {
+					String[] result = requst.getParameterValues("ip_rows_data");
+					for (String s : result){
+						System.out.println("Trying to get ip_rows data : " + s);
+					}
+					System.out.println("Pringint multi add session : " + session.toString());
 					session.put("select_servers", select_servers);
 					session.put("choose_data", choose_data);
+					session.put("ip_rows_data", result);
+					System.out.println("check & multi in add.java printing choose_data : " +  choose_data);
+					System.out.println("check & multi in add.java printing table_data : " +  ip_rows_data);
+
 					requst.setAttribute("ContentPage",
 							"/WEB-INF/ContentPage/Add/MultiMACAddressAdd.jsp");
 					requst.setAttribute("multiMac", "style='background-color:#E7CDFF;'");
@@ -145,6 +159,7 @@ public class Add extends ActionSupport {
 					jump_login = false;
 				}
 				if (jump.equals("read")) {
+					System.out.println("Pringint multi add read session : " + session.toString());
 					if (fileData != null) {
 						String realpath = ServletActionContext
 								.getServletContext().getRealPath("/file/"+session.get("userName")+"/Add/");

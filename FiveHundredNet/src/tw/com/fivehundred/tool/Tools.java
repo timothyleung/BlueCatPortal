@@ -18,9 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 import tw.com.fivehundred.add.been.OneMacAddress;
 import tw.com.fivehundred.log.LogMian;
+import tw.com.fivehundred.tag.add.MultiMACAddress;
 
 import com.bluecatnetworks.proteus.api.client.java.constants.ObjectTypes;
 import com.bluecatnetworks.proteus.api.client.java.proxy.APIEntity;
@@ -74,7 +76,7 @@ public class Tools {
 						1000 * count_number, 999);
 				count_number++;
 				for (int i = 0; i < fields.length; i++) {
-					System.out.println("Adding MACaddress into entity Tools.java, mac : " + fields[i].toString() + " " + fields[i].getProperties() + " " + fields[i].getName());
+					// System.out.println("Adding MACaddress into entity Tools.java, mac : " + fields[i].toString() + " " + fields[i].getProperties() + " " + fields[i].getName());
 					aPIEntity_list.add(fields[i]);
 				}
 			} while (fields.length == 999);
@@ -320,11 +322,9 @@ public class Tools {
 		r
 	 */
 	public static String getIPNETWORKbyCIDRstring(String CIDRstring) {
-		System.out.println("get ipnetwork by cidr string? : " + CIDRstring);
 		String rtnvalue= CIDRstring.substring(
 				CIDRstring.indexOf("CIDR=") + 5,
 				CIDRstring.indexOf( "|", CIDRstring.indexOf("CIDR=")));
-		System.out.println("return this cidr string : " + rtnvalue);
 
 		return rtnvalue;
 	}
@@ -502,10 +502,15 @@ public class Tools {
 			assert (available_ip_entities.length != 0) : "No available ip returned";
 			APIEntity ipv4_entity = available_ip_entities[0];
 			String ip4Network = Tools.getIPNETWORKbyCIDRstring(ipv4_entity.getProperties()); // return 10.0.1.0/24
-			String available_ip =service.getNextAvailableIP4Address(ipv4_entity.getId());
-			oneMacAddress.setIP_Address(available_ip);
+			String available_ip;
+			if(index == 0) {
+				available_ip=service.getNextAvailableIP4Address(ipv4_entity.getId());
+				oneMacAddress.setIP_Address(available_ip);
+			} else {
+				available_ip=getNextAvailableIP4AddressInBulk(service, entity, ipv4_entity);
+				oneMacAddress.setIP_Address(available_ip);
+			}
 			ip_msg = "IP Assigned By System";
-
 		} else if ( type == AddressType.IP) {
 			ip_address = oneMacAddress.getIP_Address();
 			if(ip_in_system(service, entity, ip_address)){
@@ -517,6 +522,7 @@ public class Tools {
 				// need to rmb this
 			} else {
 				// not in system : )
+				// No message have to be displayed
 			}
 		}
 		
@@ -528,7 +534,7 @@ public class Tools {
 			overwrite_check = true;
 			// need to rmb this
 		} else {
-			// happy
+			// happy, No message have to be displayed
 		}
 		
 		// print out everything
@@ -539,8 +545,40 @@ public class Tools {
 			
 		} else {
 			// multiple printing
+			print_import_multiple_row(out, oneMacAddress, ip_msg, mac_msg, index);
 		}
 		return overwrite_check;
+	}
+	
+
+	private static String getNextAvailableIP4AddressInBulk(ProteusAPI_PortType service, APIEntity entity, APIEntity ipv4_entity) throws RemoteException{
+		String available_ip;
+		if(MultiMACAddress.GLOBAL_MULTI_ADDRESS_STORER.size() == 0) {
+			available_ip = service.getNextAvailableIP4Address(ipv4_entity.getId());
+			MultiMACAddress.GLOBAL_MULTI_ADDRESS_STORER.add(available_ip);
+		} else {
+			int count = MultiMACAddress.GLOBAL_MULTI_ADDRESS_STORER.size();
+			String first_assigned_ip = MultiMACAddress.GLOBAL_MULTI_ADDRESS_STORER.get(0);
+			String[] ip_array = first_assigned_ip.split("\\.");
+			int ip4 = Integer.valueOf(ip_array[3]);
+			System.out.println("Printing ip4 number : " + ip4);
+			ip4 += count; 
+			ip_array[3] = String.valueOf(ip4);
+			while( ip4 <= 255 && (ip_in_system(service, entity, StringUtils.join(ip_array, "."))  || 
+					MultiMACAddress.GLOBAL_MULTI_ADDRESS_STORER.contains(StringUtils.join(ip_array, "."))) ) {
+				ip4++;
+				ip_array[3] = String.valueOf(ip4);
+				System.out.println("Printing new ip address : " + StringUtils.join(ip_array, "."));
+			}
+			if(ip4 > 255){
+				// terrible, no available ip in this subnet
+				available_ip = "Error: No more free ip in this subnet, DO NOT OVERWRITE!";
+			} else {
+				available_ip = StringUtils.join(ip_array, ".");
+				MultiMACAddress.GLOBAL_MULTI_ADDRESS_STORER.add(available_ip);
+			}
+		}
+		return available_ip;
 	}
 	/**
 	 * 
@@ -662,6 +700,51 @@ public class Tools {
 	}
 
 	/* For import */
+	
+	private static void print_import_multiple_row(JspWriter out, OneMacAddress oneMacAddress, String ip_msg, String mac_msg, int index) throws IOException{
+		
+		if(ip_msg.isEmpty() && mac_msg.isEmpty()){
+			// both ip and mac are valid! 
+			out.write("<tr>");
+			print_cell(out,  oneMacAddress.getMAC_Address());
+			print_cell_with_hidden_input(out, oneMacAddress.getIP_Address(), "ip_rows_data", oneMacAddress.getIP_Address());			
+			print_user_defined_attr_cells(out, oneMacAddress);
+			// hide overwrite select button
+			out.write("<td>" + "<input type='hidden' name='choose_data' value='"
+											+ index + "' checked='checked'></td>"); // or checkbox
+			out.write("</tr>");
+		} else {
+			// either one is invalid 
+			out.write("<tr class=\"warning\">");
+			print_cell(out,  oneMacAddress.getMAC_Address() + mac_msg);
+			print_cell_with_hidden_input(out, oneMacAddress.getIP_Address() + ip_msg, "ip_rows_data", oneMacAddress.getIP_Address());	
+			print_user_defined_attr_cells(out, oneMacAddress);
+			// print overwrite select button
+			out.write("<td>" + "<input type='checkbox' name='choose_data' value='"
+											+ index + "' checked='checked'></td>"); // or checkbox
+			out.write("</tr>");
+		}
+	}
+	
+	private static void print_user_defined_attr_cells(JspWriter out, OneMacAddress oneMacAddress) throws IOException{
+		print_cell(out,  oneMacAddress.getMachine_Type());
+		print_cell(out, oneMacAddress.getLocation());
+		print_cell(out, oneMacAddress.getOwner());
+		print_cell(out, oneMacAddress.getDepartment());
+		print_cell(out,  oneMacAddress.getPhone_Number());
+		print_cell(out, oneMacAddress.getReference());
+		print_cell(out, Tools.getTime()); // this will be null
+	}
+	
+	private static void print_cell_with_hidden_input(JspWriter out, String value, String hidden_field_name, String field_value) throws IOException{
+		out.write("<td>" + value + "<input type='hidden' name='" + hidden_field_name + "' value='" + field_value +"'/></td>");
+
+	}
+	private static void print_cell(JspWriter out, String value) throws IOException{
+		out.write("<td>" + value + "</td>");
+	}
+
+	
 	private static void print_import_single_ip_mac_row(JspWriter out, OneMacAddress oneMacAddress, String ip_msg, String mac_msg) throws IOException{
 		print_import_single_ip_mac_row_wrapper(out, ImportAttr.MAC_ADDR.getIndex(), oneMacAddress.getMAC_Address(), mac_msg);
 		print_import_single_ip_mac_row_wrapper(out, ImportAttr.IP_ADDR.getIndex(), oneMacAddress.getIP_Address(), ip_msg);

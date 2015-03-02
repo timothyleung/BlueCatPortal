@@ -32,11 +32,11 @@ import com.bluecatnetworks.proteus.api.client.java.proxy.ProteusAPI_PortType;
 import com.opensymphony.xwork2.ActionContext;
 
 public class MultiMACAddressAdd extends TagSupport {
-	private String file_path;
 	private String serverid1="BDDS1";
 	private String serverid2="BDDS2";
+	private String file_path;
+
 	private SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-	
 	private String title[] = { "MAC Address", "IP Address", "Machine Type",
 			"Location", "Owner", "Department", "Phone Number", "Reference",
 			"Input Date","Overwrite" };
@@ -53,15 +53,25 @@ public class MultiMACAddressAdd extends TagSupport {
 				.getRequest();
 		Map session = ActionContext.getContext().getSession();
 		HttpServletResponse response = ServletActionContext.getResponse();
-		file_path = (String) session.get("file_path");
-		String choose_data = (String) session.get("choose_data");
+		String choose_data = (String) session.get("choose_data"); // return the checked index 1, 2, 3..
 		String select_config = "hkbu";//(String) session.get("select_config");
 		String select_servers = (String) session.get("select_servers");
+		String[] ip_rows_data = (String[]) session.get("ip_rows_data");
+		String ip_choice = (String) session.get("ip_choice");
+		file_path = (String) session.get("file_path");
 		session.remove("select_servers");
 		session.remove("file_path");
 		session.remove("choose_data");
 		session.remove("select_config");
-		String[] file_data =  (String[]) session.get("file_data");// readFile();
+		session.remove("ip_choice");
+
+		// String[] file_data =  (String[]) session.get("file_data");// readFile();
+		String[] file_data = readFile();
+
+		System.out.println("Printing out file data"  );
+		for(String s : file_data){
+			System.out.println("[*] " + s) ;
+		}
 		String[] data = null;
 		JspWriter out = this.pageContext.getOut();
 		ProteusAPI_PortType service = (ProteusAPI_PortType) session
@@ -82,14 +92,16 @@ public class MultiMACAddressAdd extends TagSupport {
 				String log_Content = "";
 				for (int i = 0; i < choose.length; i++) {
 					log_Content = "";
-					data = Tools.readData(file_data[choose[i]]);
+					data = file_data[choose[i]].split(",", -1);
 					
 					// �R��IP 
-					APIEntity config7 = service.getIP4Address(id, data[1].trim());
-					if (config7!=null){
-					service.delete(config7.getId());
-					} 
-					
+					APIEntity config7;
+					if(!ip_choice.equals("2")){
+						config7 = service.getIP4Address(id, data[1].trim());
+						if (config7!=null){
+						service.delete(config7.getId());
+						} 
+					}					
 					//�R��mac
 					config7 = service.getMACAddress(id, data[0].trim());
 					if (config7!=null){
@@ -132,9 +144,16 @@ public class MultiMACAddressAdd extends TagSupport {
 						long mac_long = service.addMACAddress(id, data[0].trim(),
 								props0.getPropertiesString());
 						// �[�Jip
-						long ip_ans = service.assignIP4Address(id, data[1].trim(),
-								data[0].trim(), "|", "MAKE_DHCP_RESERVED",
-								user_defined);
+						long ip_ans;
+						if(ip_choice.equals("2")){
+							 ip_ans = service.assignIP4Address(id, ip_rows_data[choose[i]-1].trim(),
+									data[0].trim(), "|", "MAKE_DHCP_RESERVED",
+									user_defined);
+						} else {
+							 ip_ans = service.assignIP4Address(id, data[1].trim(),
+									data[0].trim(), "|", "MAKE_DHCP_RESERVED",
+									user_defined);
+						}
 						log_Content = userName + "," + "Multi Address" + ","
 								+ data[0].trim() + "," + "Add" + "," + "Success" + ","
 								+ Tools.getTime() + "," + "MAC Address Created";
