@@ -96,22 +96,26 @@ public class MultiMACAddress extends TagSupport {
 				System.out.println("After reading from CSV file, onemacaddress is : " + oneMacAddress.toString());
 				String mac_address = oneMacAddress.getMAC_Address();
 				String ip_address = oneMacAddress.getIP_Address();
-				if(Tools.checkMacAddress(mac_address)){
-					if(Tools.checkIPAddress(ip_address)){
-						if (ip_choice.equals("2")) {
-							oneMacAddress.setIP_Address_NetWork(ip_choice_network);
-							Tools.single_addition_check(out, service, config, AddressType.IPV4_NETWORK, oneMacAddress, i+1);
-						} else {
+				
+				if(ip_choice.equals("1")){
+					if(Tools.checkMacAddress(mac_address)){
+						if(Tools.checkIPAddress(ip_address)){
 							Tools.single_addition_check(out, service, config, AddressType.IP, oneMacAddress, i+1);
+						} else {
+							out.write("<tr ><th colspan='100%'>" + ip_address + " is in invalid format.</th></tr>");
 						}
 					} else {
-						out.write("<tr><th span='100%'>" + ip_address + " is in invalid format.</th></tr>");
-						// print row ip addr invalid
+						out.write("<tr><th colspan='100%'>" + mac_address + " is in invalid format.</th></tr>");
 					}
 				} else {
-					//print row // mac address invalid
-					out.write("<tr><th span='100%'>" + mac_address + " is in invalid format.</th></tr>");
+					if(Tools.checkMacAddress(mac_address)){
+						oneMacAddress.setIP_Address_NetWork(ip_choice_network);
+						Tools.single_addition_check(out, service, config, AddressType.IPV4_NETWORK, oneMacAddress, i+1);			
+					} else {
+						out.write("<tr><th colspan='100%'>" + mac_address + " is in invalid format.</th></tr>");
+					}
 				}
+				
 
 			}
 			out.write("</table>");
